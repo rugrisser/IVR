@@ -45,7 +45,7 @@
 
 **[ ИНСТРУМЕНТЫ РАЗРАБОТКИ ]**
 
-HTML / CSS / JS / Java / Spring Boot / PostgreSQL / jQuery / React.js
+HTML / CSS / JS / Java / Spring Boot / PostgreSQL / Vue.js
 
 **[ ЭТАПЫ РАЗРАБОТКИ ]**
 
