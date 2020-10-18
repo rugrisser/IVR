@@ -1,2 +1,8 @@
+$max-sidebar-menu-width: 450px;
+
 $primary-color: #667EF8;
 $primary-color-dark: #5B71DE;
+
+@function primary-color-opacity($opacity) {
+  @return hsla(230, 91, 69, $opacity / 100)
+}

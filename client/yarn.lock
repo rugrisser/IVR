@@ -11922,6 +11922,11 @@ vue-client-only@^2.0.0:
   resolved "https://registry.yarnpkg.com/vue-client-only/-/vue-client-only-2.0.0.tgz#ddad8d675ee02c761a14229f0e440e219de1da1c"
   integrity sha512-arhk1wtWAfLsJyxGMoEYhoBowM87/i6HLSG2LH/03Yog6i2d9JEN1peMP0Ceis+/n9DxdenGYZZTxbPPJyHciA==
 
+vue-enums@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-enums/-/vue-enums-1.0.0.tgz#4501ea8c256a97a29916f61e4d934425d105b1b4"
+  integrity sha512-fCLmWRSzl6O7e9BkQ+aFdrWpvIxLlNIWswjvvCLkzsCQ4/nSCVrRd7Tr+9/651d1FGOe5v3fuPIFVP6Cjsv+0Q==
+
 vue-eslint-parser@^7.0.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-7.1.0.tgz#9cdbcc823e656b087507a1911732b867ac101e83"

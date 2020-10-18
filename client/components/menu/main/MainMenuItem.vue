@@ -25,7 +25,7 @@
     },
     data() {
       return {
-        iconLinkAlias: '/img/ui/menu/icon/',
+        iconLinkAlias: '/img/ui/menu/icon/white/',
       }
     },
     computed: {

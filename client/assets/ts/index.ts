@@ -1,4 +1,10 @@
-export class MenuItem {
+export interface IMenuItem {
+  getName(): string
+  getIcon(): string
+  getLink(): string
+}
+
+export class MenuItem implements IMenuItem {
   private text: string
   private icon: string
   private link: string
@@ -18,4 +24,9 @@ export class MenuItem {
   public getLink() : string {
     return this.link
   }
-};
+}
+
+export enum LogoColor {
+  Black = "black", 
+  White = "white",
+}

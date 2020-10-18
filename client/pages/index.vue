@@ -7,10 +7,10 @@
         <MainMenu :items="menuItems" />
       </div>
     </div>
-    <div class="home" @click="closeMenu">
+    <div class="home default-container" @click="closeMenu">
       <div class="row">
         <div class="col-12 col-md-6">
-          <LogoWhite text />
+          <Logo :color="LogoColor.White" text />
         </div>
         <div class="col-12 col-md-6 d-flex">
           <img
@@ -39,24 +39,14 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import LogoWhite from '~/components/logo/LogoWhite.vue'
+  import Logo from '~/components/logo/Logo.vue'
   import MainMenu from '~/components/menu/main/MainMenu.vue'
-  import { MenuItem } from '~/assets/ts'
+  import { MenuItem, LogoColor } from '~/assets/ts'
 
   export default Vue.extend({
     components: {
-      LogoWhite,
+      Logo,
       MainMenu,
-    },
-    methods: {
-      openMenu() {
-        this.menuOpened = true
-      },
-      closeMenu(event) {
-        if (event.target !== this.$refs.menuButton) {
-          this.menuOpened = false
-        }
-      },
     },
     data() {
       return {
@@ -67,18 +57,26 @@
           new MenuItem('Вход', 'key.svg', '/login'),
         ],
         menuOpened: false,
+        LogoColor,
       }
+    },
+    methods: {
+      openMenu() {
+        this.menuOpened = true
+      },
+      closeMenu(event: Event) {
+        if (event.target !== this.$refs.menuButton) {
+          this.menuOpened = false
+        }
+      },
     },
   })
 </script>
 
 <style lang="scss">
   body {
-    overflow: hidden;
-    background-color: $primary-color;
-  }
-  .home {
-    margin: 72px 72px 0;
+    overflow-x: hidden;
+    background-color: $primary-color !important;
   }
   .info-block {
     margin-top: 48px;
@@ -107,7 +105,7 @@
     display: flex;
     left: calc(100vw - 550px);
     width: 550px;
-    position: absolute;
+    position: fixed;
     height: 100vh;
     background-color: $primary-color-dark;
     transition: left 350ms ease-out;

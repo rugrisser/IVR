@@ -1,7 +1,7 @@
 <template>
   <div class="main-menu">
-    <MainMenuItem 
-      v-for="(item, index) in items" 
+    <MainMenuItem
+      v-for="(item, index) in items"
       :key="index"
       :text="item.text"
       :icon="item.icon"
