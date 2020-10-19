@@ -1,5 +1,5 @@
 <template>
-  <div class="article-card">
+  <div class="article-card" @click="go">
     <h1>{{ title }}</h1>
     <p>{{ text }}</p>
     <div class="time d-flex flex-row">
@@ -15,6 +15,10 @@
   export default Vue.extend({
     name: 'ArticleCard',
     props: {
+      id: {
+        type: Number,
+        required: true,
+      },
       title: {
         type: String,
         required: true,
@@ -26,6 +30,21 @@
       date: {
         type: String,
         required: true,
+      },
+    },
+    data() {
+      return {
+        articleAlias: '/news/',
+      }
+    },
+    computed: {
+      link(): string {
+        return this.articleAlias + this.id
+      },
+    },
+    methods: {
+      go() {
+        this.$router.push(this.link)
       },
     },
   })

@@ -1,10 +1,22 @@
+export interface IStoreState {
+  menu: {
+    sidebar: {
+      items: MenuItem[]
+    }
+  }
+}
+
+export interface IPOJO {
+  toJSON(): string
+}
+
 export interface IMenuItem {
   getName(): string
   getIcon(): string
   getLink(): string
 }
 
-export class MenuItem implements IMenuItem {
+export class MenuItem implements IMenuItem, IPOJO {
   private text: string
   private icon: string
   private link: string
@@ -23,6 +35,13 @@ export class MenuItem implements IMenuItem {
   }
   public getLink() : string {
     return this.link
+  }
+  public toJSON() : string {
+    return JSON.stringify({
+      text: this.text,
+      icon: this.icon,
+      link: this.link,
+    })
   }
 }
 
