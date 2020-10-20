@@ -8,3 +8,12 @@ body {
 .default-container {
   margin: 72px;
 }
+
+.sidebar {
+  max-width: $max-sidebar-menu-width;
+}
+.sidebar-fixed {
+  position: fixed;
+  max-width: $max-sidebar-menu-width;
+  z-index: 2000;
+}

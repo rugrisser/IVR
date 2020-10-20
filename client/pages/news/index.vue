@@ -51,14 +51,6 @@
   body {
     background-color: white !important;
   }
-  .sidebar {
-    max-width: $max-sidebar-menu-width;
-  }
-  .sidebar-fixed {
-    position: fixed;
-    max-width: $max-sidebar-menu-width;
-    z-index: 2000;
-  }
   .news-feed {
     padding-top: 204px;
     padding-left: 48px;

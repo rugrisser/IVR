@@ -43,7 +43,7 @@
       },
     },
     methods: {
-      go() {
+      go(): void {
         this.$router.push(this.link)
       },
     },
