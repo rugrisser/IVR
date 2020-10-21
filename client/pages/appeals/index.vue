@@ -9,7 +9,17 @@
       </div>
       <div class="col-12 col-md-6 sidebar"></div>
       <div class="col-12 col-md-6 appeals-feed">
-        <div class="head"></div>
+        <div class="head">
+          <div class="buttons">
+            <div @click="$router.push('/appeals/edit')">
+              <img src="/img/ui/plus.svg" />
+              <span>Создать обращение</span>
+            </div>
+            <div>
+              <span>Ваши обращения: 2</span>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <AppealCard
             :id="1"
@@ -48,10 +58,14 @@
 <script lang="ts">
   import Vue from 'vue'
   import { mapGetters } from 'vuex'
+  import Logo from '~/components/logo/Logo.vue'
+  import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import AppealCard from '~/components/AppealCard.vue'
 
   export default Vue.extend({
     components: {
+      Logo,
+      SidebarMenu,
       AppealCard,
     },
     computed: {
@@ -67,6 +81,38 @@
     .head {
       display: flex;
       height: 204px;
+      .buttons {
+        display: inline-flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: auto 0 20px;
+        div {
+          cursor: pointer;
+          display: inline-flex;
+          padding: 18px 36px;
+          background-color: primary-color-opacity(15);
+          border-radius: 100px;
+          margin-right: 32px;
+          margin-bottom: 16px;
+          transition: 200ms ease-out;
+          img {
+            height: 32px;
+            width: auto;
+            margin: auto 12px auto 0;
+          }
+          span {
+            color: $primary-color-dark;
+            font-size: 24px;
+            font-family: 'Jost';
+          }
+          &:hover {
+            background-color: primary-color-opacity(25);
+          }
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
     }
   }
 </style>
