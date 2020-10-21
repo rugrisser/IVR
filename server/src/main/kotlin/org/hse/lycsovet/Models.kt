@@ -1,6 +1,7 @@
 package org.hse.lycsovet
 
-import com.sun.istack.NotNull
+import org.springframework.data.annotation.CreatedDate
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -8,7 +9,7 @@ import javax.persistence.*
 data class AppealType(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
+        val id: Long?,
 
         val name: String
 )
@@ -18,7 +19,7 @@ data class AppealType(
 data class AppealStatus(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
+        val id: Long?,
 
         val name: String,
         val milestone: Long
@@ -29,25 +30,28 @@ data class AppealStatus(
 data class User(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
+        val id: Long?,
 
         @Column(unique = true)
-        val email: String
+        val email: String,
+        val created: Date = Date()
 )
 
 @Entity
-@Table(name = "news")
-data class News(
+@Table(name = "articles")
+data class Article(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
+        val id: Long?,
+        var title: String,
+        @Column(columnDefinition = "text")
+        var description: String,
 
-        val title: String,
-        @Lob
-        val description: String,
-
-        @Lob
-        val text: String
+        @Column(columnDefinition = "text")
+        var text: String,
+        var published: Boolean,
+        val created: Date = Date(),
+        var updated: Date = Date()
 )
 
 @Entity
@@ -55,14 +59,16 @@ data class News(
 data class Appeal(
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-        val id: Long,
+        val id: Long?,
 
         val title: String,
-        @Lob
+        @Column(columnDefinition = "text")
         val text: String,
         val feedback: Int,
         @ManyToOne
         val type: AppealType,
         @ManyToOne
-        val status: AppealStatus
+        val status: AppealStatus,
+        val created: Date = Date(),
+        val updated: Date = Date()
 )
