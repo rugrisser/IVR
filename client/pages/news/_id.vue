@@ -11,6 +11,10 @@
       <div class="col-12 col-md-6 news-content">
         <div class="heading">
           <h1>{{ article.title }}</h1>
+          <img
+            src="/img/ui/pen.svg"
+            @click="$router.push('/news/edit/' + articleID)"
+          />
         </div>
         <div class="main-content">
           <div
@@ -40,7 +44,7 @@
     },
     data() {
       return {
-        articleID: 0,
+        articleID: null,
         article: {
           title: '',
           text: '',
@@ -102,6 +106,16 @@
         font-weight: 600;
         font-family: 'Jost';
         margin: auto 0 24px;
+      }
+      img {
+        cursor: pointer;
+        margin: auto 0 24px auto;
+        height: 48px;
+        opacity: 0.5;
+        transition: 200ms ease-out;
+        &:hover {
+          opacity: 1;
+        }
       }
     }
     .main-content {
