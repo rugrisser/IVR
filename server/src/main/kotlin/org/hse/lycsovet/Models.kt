@@ -26,6 +26,16 @@ data class AppealStatus(
 )
 
 @Entity
+@Table(name = "roles")
+data class Role(
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        val id: Long?,
+        @Column(unique = true)
+        val name: String
+)
+
+@Entity
 @Table(name = "users")
 data class User(
         @Id
@@ -34,6 +44,8 @@ data class User(
 
         @Column(unique = true)
         val email: String,
+        @ManyToOne
+        val role: Role,
         val created: Date = Date()
 )
 
