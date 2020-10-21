@@ -2,7 +2,7 @@ package org.hse.lycsovet.controller
 
 import org.hse.lycsovet.Article
 import org.hse.lycsovet.ArticleDTO
-import org.hse.lycsovet.service.impl.NewsServiceImpl
+import org.hse.lycsovet.service.NewsServiceImpl
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

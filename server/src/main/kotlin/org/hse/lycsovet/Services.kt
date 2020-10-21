@@ -1,8 +1,6 @@
-package org.hse.lycsovet.service
+package org.hse.lycsovet
 
-import org.hse.lycsovet.Article
-import org.hse.lycsovet.ArticleDTO
-
+interface AppealService
 interface NewsService {
     fun get(id: Long): Article
     fun all(): List<Article>
@@ -12,3 +10,5 @@ interface NewsService {
     fun edit(articleDTO: ArticleDTO)
     fun delete(id: Long)
 }
+interface SupportService
+interface UserService

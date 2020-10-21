@@ -1,14 +1,13 @@
-package org.hse.lycsovet.service.impl
+package org.hse.lycsovet.service
 
 import org.hse.lycsovet.*
-import org.hse.lycsovet.service.NewsService
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class NewsServiceImpl(
         private val newsCrudRepository: NewsCrudRepository
-): NewsService {
+) : NewsService {
     override fun get(id: Long): Article {
         val articleOptional = newsCrudRepository.findById(id)
         if (articleOptional.isEmpty) {
