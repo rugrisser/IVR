@@ -18,5 +18,9 @@ interface NewsService {
     fun edit(articleDTO: ArticleDTO)
     fun delete(id: Long)
 }
-interface SupportService
+interface SupportService {
+    fun get(): List<Ticket>
+    fun create(ticketDTO: TicketDTO) : Long?
+    fun close(id: Long, message: String)
+}
 interface UserService

@@ -18,10 +18,13 @@ interface NewsCrudRepository : CrudRepository<Article, Long> {
     fun findAllByPublished(published: Boolean) : List<Article>
 }
 interface AppealCrudRepository : CrudRepository<Appeal, Long> {
-    override fun findAll(): List<Appeal>
+    override fun findAll() : List<Appeal>
     fun findAllByAuthor(author: User) : List<Appeal>
     fun findAllByStatusInAndPublished(statuses: Collection<AppealStatus>, published: Boolean) : List<Appeal>
 }
 interface RoleCrudRepository : CrudRepository<Role, Long> {
     fun findByName(name: String) : Optional<Role>
+}
+interface TicketCrudRepository : CrudRepository<Ticket, Long> {
+    override fun findAll() : List<Ticket>
 }

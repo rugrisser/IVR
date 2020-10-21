@@ -87,3 +87,20 @@ data class Appeal(
         val created: Date = Date(),
         var updated: Date = Date()
 )
+
+@Entity
+@Table(name = "tickets")
+data class Ticket(
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        val id: Long?,
+        @ManyToOne
+        val user: User,
+        @Column(columnDefinition = "text")
+        val text: String,
+        @Column(columnDefinition = "text")
+        var response: String = "",
+        var opened: Boolean = true,
+        val created: Date = Date(),
+        var updated: Date = Date()
+)

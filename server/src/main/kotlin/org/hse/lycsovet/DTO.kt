@@ -19,3 +19,6 @@ data class AppealDTO(
         val published: Boolean,
         val type: String
 )
+data class TicketDTO(
+        val text: String
+)
