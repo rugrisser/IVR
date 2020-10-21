@@ -1,0 +1,19 @@
+@import "variables";
+@import "../../node_modules/bootstrap/scss/bootstrap-grid";
+
+body {
+  margin: 0;
+  padding: 0;
+}
+.default-container {
+  margin: 72px;
+}
+
+.sidebar {
+  max-width: $max-sidebar-menu-width;
+}
+.sidebar-fixed {
+  position: fixed;
+  max-width: $max-sidebar-menu-width;
+  z-index: 2000;
+}
