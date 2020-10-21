@@ -3,10 +3,11 @@ package org.hse.lycsovet
 interface AppealService {
     fun get(id: Long): Appeal
     fun all(): List<Appeal>
+    fun own(): List<Appeal>
     fun feed(): List<Appeal>
-    fun create()
-    fun edit()
-    fun changeStatus(status: String)
+    fun create(appealDTO: AppealDTO) : Long?
+    fun edit(appealDTO: AppealDTO)
+    fun changeStatus(id: Long, status: String)
 }
 interface NewsService {
     fun get(id: Long): Article

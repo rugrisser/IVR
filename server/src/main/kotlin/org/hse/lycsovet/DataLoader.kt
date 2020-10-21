@@ -79,8 +79,8 @@ class DataLoader(
         logger.info("[DATA LOADER] Appeal types creating start")
 
         val types: Array<AppealType> = arrayOf(
-                AppealType(null, "Proposal"),
-                AppealType(null, "Complaint")
+                AppealType(null, "proposal"),
+                AppealType(null, "complaint")
         )
         types.forEach { type: AppealType ->
             val appealTypeOptional = appealTypeCrudRepository.findByName(type.name)

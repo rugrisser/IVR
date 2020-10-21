@@ -73,14 +73,17 @@ data class Appeal(
         @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long?,
 
-        val title: String,
+        var title: String,
         @Column(columnDefinition = "text")
-        val text: String,
+        var text: String,
+        @ManyToOne
+        val author: User,
         val feedback: Int,
+        var published: Boolean,
         @ManyToOne
-        val type: AppealType,
+        var type: AppealType,
         @ManyToOne
-        val status: AppealStatus,
+        var status: AppealStatus,
         val created: Date = Date(),
-        val updated: Date = Date()
+        var updated: Date = Date()
 )
