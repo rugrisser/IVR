@@ -10,16 +10,12 @@
       <div class="col-12 col-md-6 sidebar"></div>
       <div class="col-12 col-md-6 news-feed">
         <ArticleCard
-          :id="1"
-          title="Lorem Ipsum"
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eleifend lectus nascetur massa cras in. Arcu turpis dolor lacus, quis eget turpis tellus dui."
-          date="5 минут назад"
-        />
-        <ArticleCard
-          :id="2"
-          title="Lorem Ipsum"
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eleifend lectus nascetur massa cras in. Arcu turpis dolor lacus, quis eget turpis tellus dui."
-          date="5 минут назад"
+          v-for="article in articles"
+          :id="article.id"
+          :key="article.id"
+          :title="article.title"
+          :text="article.description"
+          date="Сегодня"
         />
       </div>
     </div>
@@ -39,10 +35,20 @@
       SidebarMenu,
       ArticleCard,
     },
+    data() {
+      return {
+        articles: [],
+      }
+    },
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
       }),
+    },
+    mounted() {
+      this.$axios.$get('/news').then((response) => {
+        this.articles = response.reverse()
+      })
     },
   })
 </script>

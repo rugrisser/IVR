@@ -54,13 +54,20 @@
             <FormCheckbox id="email" val="email" v-model="form.feedback">
               E-Mail
             </FormCheckbox>
-            <FormCheckbox id="vk" val="vk" v-model="form.feedback">ВК</FormCheckbox>
+            <FormCheckbox id="vk" val="vk" v-model="form.feedback"
+              >ВК</FormCheckbox
+            >
           </div>
           <div>
-            <PrimaryButton style="margin-right: 24px" @click.native="test">
+            <PrimaryButton
+              style="margin-right: 24px"
+              @click.native="submit(true)"
+            >
               Отправить
             </PrimaryButton>
-            <SecondaryButton @click.native="test">Сохранить черновик</SecondaryButton>
+            <SecondaryButton @click.native="submit(false)">
+              Сохранить черновик
+            </SecondaryButton>
           </div>
         </div>
       </div>
@@ -95,7 +102,7 @@
         form: {
           title: '',
           text: '',
-          feedback: ['email'],
+          feedback: [],
         },
         type: AppealType.Proposal,
         AppealType,
@@ -114,17 +121,97 @@
         this.id = 0
       } else {
         this.isEdit = true
-        this.id = 1
+        this.id = id
+        this.$axios
+          .$get('/appeal/' + id)
+          .then((response) => {
+            // console.log(response)
+
+            this.form.title = response.title
+            this.form.text = response.text
+
+            if (response.type.name === 'complaint') {
+              this.type = AppealType.Complaint
+            } else {
+              this.type = AppealType.Proposal
+            }
+
+            if (response.feedback >= 2) {
+              this.form.feedback.push('vk')
+              response.feedback -= 2
+            }
+            if (response.feedback === 1) {
+              this.form.feedback.push('email')
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+            this.$router.push('/appeals')
+          })
       }
     },
     methods: {
       checkType(type: AppealType): void {
         this.type = type
-        console.log('Checked', type)
       },
-      test() {
-        console.log(this.form)
-      }
+      submit(publish: Boolean) {
+        let feedback = 0
+        const type: string =
+          this.type === AppealType.Proposal ? 'proposal' : 'complaint'
+
+        if (this.form.feedback.includes('email')) {
+          feedback += 1
+        }
+        if (this.form.feedback.includes('vk')) {
+          feedback += 2
+        }
+
+        const body = {
+          title: this.form.title,
+          text: this.form.text,
+          feedback,
+          type,
+          published: publish,
+        }
+
+        if (this.isEdit) {
+          const body = {
+            id: this.id,
+            title: this.form.title,
+            text: this.form.text,
+            feedback,
+            type,
+            published: publish,
+          }
+
+          this.$axios
+            .$put('/appeal', body)
+            .then((response) => {
+              this.$router.push('/appeals/' + this.id)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        } else {
+          const body = {
+            title: this.form.title,
+            text: this.form.text,
+            feedback,
+            type,
+            published: publish,
+          }
+
+          this.$axios
+            .$post('/appeal', body)
+            .then((response) => {
+              const id = response.id
+              this.$router.push('/appeals/' + id)
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+      },
     },
   })
 </script>

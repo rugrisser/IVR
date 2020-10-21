@@ -6,6 +6,7 @@ import org.hse.lycsovet.service.SupportServiceImpl
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@CrossOrigin
 @RestController
 @RequestMapping("/support")
 class SupportController(

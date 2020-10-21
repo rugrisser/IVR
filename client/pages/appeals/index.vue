@@ -15,40 +15,20 @@
               <img src="/img/ui/plus.svg" />
               <span>Создать обращение</span>
             </div>
-            <div>
-              <span>Ваши обращения: 2</span>
+            <div v-if="ownAppealsLen >= 0" @click="ownView = !ownView" :class="{ selected: ownView }">
+              <span>Ваши обращения: {{ ownAppealsLen }}</span>
             </div>
           </div>
         </div>
         <div class="row">
           <AppealCard
-            :id="1"
-            text="Закупить стаканчики для кулеров"
-            type="proposal"
-            date="Неделю назад"
-            status="reviewed"
-          />
-          <AppealCard
-            :id="2"
-            text="Установить велопарковку на БХ"
-            type="proposal"
-            date="Две недели назад"
-            status="consideration"
-          />
-          <AppealCard
-            :id="3"
-            text="Lorem Ipsum"
-            type="proposal"
-            date="Две недели назад"
-            status="rejected"
-          />
-          <AppealCard
-            :id="4"
-            text="Lorem Ipsum"
-            type="complaint"
-            date="Месяц назад"
-            status="modearation"
-          />
+            v-for="appeal in appeals"
+            :key="appeal.id"
+            :id="appeal.id"
+            :text="appeal.title"
+            :type="appeal.type.name"
+            date="Сегодня"
+            :status="appeal.status.name" />
         </div>
       </div>
     </div>
@@ -68,10 +48,31 @@
       SidebarMenu,
       AppealCard,
     },
+    data() {
+      return {
+        allAppeals: [],
+        ownAppeals: [],
+        ownView: false,
+      }
+    },
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
       }),
+      appeals(): Array<?> {
+        return this.ownView ? this.ownAppeals.reverse() : this.allAppeals.reverse()
+      },
+      ownAppealsLen(): Number {
+        return this.ownAppeals.length
+      }
+    },
+    mounted() {
+      this.$axios.$get('/appeal').then((response) => {
+        this.allAppeals = response
+      })
+      this.$axios.$get('/appeal/own').then((response) => {
+        this.ownAppeals = response
+      })
     },
   })
 </script>
@@ -110,6 +111,15 @@
           }
           &:last-child {
             margin-right: 0;
+          }
+        }
+        .selected {
+          background-color: $primary-color;
+          span {
+            color: white;
+          }
+          &:hover {
+            background-color: $primary-color-dark;
           }
         }
       }

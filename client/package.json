@@ -22,7 +22,8 @@
     "core-js": "^3.6.5",
     "nuxt": "^2.14.5",
     "tslint": "^6.1.3",
-    "vue-enums": "^1.0.0"
+    "vue-enums": "^1.0.0",
+    "vue-markdown": "^2.2.4"
   },
   "devDependencies": {
     "@ava/babel": "^1.0.1",
