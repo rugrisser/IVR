@@ -63,7 +63,7 @@
               style="margin-right: 24px"
               @click.native="submit(true)"
             >
-              Отправить
+              Опубликовать
             </PrimaryButton>
             <SecondaryButton @click.native="submit(false)">
               Сохранить черновик

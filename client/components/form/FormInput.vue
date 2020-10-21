@@ -9,7 +9,7 @@
     <textarea
       v-else
       v-model="value"
-      rows="4"
+      :rows="multilineRows"
       @input="$emit('input', $event.target.value)"
     ></textarea>
   </div>
@@ -33,6 +33,11 @@
         type: Boolean,
         required: false,
         default: false,
+      },
+      multilineRows: {
+        type: Number,
+        required: false,
+        default: 4,
       },
     },
   })

@@ -56,10 +56,10 @@
         const result = []
 
         for (const paragraph of paragraphs) {
-          if (paragraph.substring(0, 2) === '!!') {
+          if (paragraph.substring(0, 1) === '#') {
             result.push({
               type: 'h2',
-              content: paragraph.substring(3),
+              content: paragraph.substring(2),
             })
           } else {
             result.push({
