@@ -8,6 +8,7 @@ import java.lang.ClassCastException
 @Service
 class PollServiceImpl (
         private val logger: Logger,
+        private val userService: UserServiceImpl,
         private val pollCrudRepository: PollCrudRepository,
         private val answerCrudRepository: AnswerCrudRepository,
         private val appealCrudRepository: AppealCrudRepository
@@ -23,77 +24,112 @@ class PollServiceImpl (
         return pollCrudRepository.findAllByAppealID(appealID)
     }
 
-    override fun answers(id: String): List<Answer> {
-        val pollOptional = pollCrudRepository.findById(id)
-        if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
+    override fun answers(token: String, id: String): List<Answer> {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 3)) throw ForbiddenException("You cannot watch poll answers")
+            val pollOptional = pollCrudRepository.findById(id)
+            if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
 
-        return answerCrudRepository.findAllByPollID(id)
-    }
-
-    override fun create(poll: PollDTO): String? {
-        if (!validatePoll(poll)) throw BadRequestException("Poll is invalid")
-
-        val pollDocument = Poll(poll)
-        pollCrudRepository.save(pollDocument)
-
-        return pollDocument.id
-    }
-
-    override fun publish(pollID: String) {
-        val pollOptional = pollCrudRepository.findById(pollID)
-        if (pollOptional.isEmpty) {
-            throw NotFoundException("Poll with given ID not found")
+            return answerCrudRepository.findAllByPollID(id)
         }
-        val poll = pollOptional.get()
 
-        if (poll.published) {
-            throw BadRequestException("Poll has already published")
+        throw ForbiddenException("Token is invalid")
+    }
+
+    override fun create(token: String, poll: PollDTO): String? {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 3)) throw ForbiddenException("You cannot create polls")
+            if (!validatePoll(poll)) throw BadRequestException("Poll is invalid")
+
+            val pollDocument = Poll(poll)
+            pollCrudRepository.save(pollDocument)
+
+            return pollDocument.id
         }
-        poll.published = true
-        pollCrudRepository.save(poll)
+
+        throw ForbiddenException("Token is invalid")
     }
 
-    override fun edit(poll: PollDTO) {
-        if (poll.id == null) throw BadRequestException("Given null poll ID")
+    override fun publish(token: String, pollID: String) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 3)) throw ForbiddenException("You cannot publish polls")
+            val pollOptional = pollCrudRepository.findById(pollID)
+            if (pollOptional.isEmpty) {
+                throw NotFoundException("Poll with given ID not found")
+            }
+            val poll = pollOptional.get()
 
-        val pollOptional = pollCrudRepository.findById(poll.id)
-        if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
-        val pollDocument = pollOptional.get()
-
-        if (!validatePoll(poll)) throw BadRequestException("Poll is invalid")
-
-        val answers = answerCrudRepository.findAllByPollID(poll.id)
-        if (answers.isNotEmpty()) throw BadRequestException("Poll has already been answered")
-
-        pollDocument.update(poll)
-        pollCrudRepository.save(pollDocument)
-    }
-
-    override fun delete(pollID: String) {
-        val pollOptional = pollCrudRepository.findById(pollID)
-        if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
-        val poll = pollOptional.get()
-
-        answerCrudRepository.deleteAllByPollID(poll.id!!)
-        pollCrudRepository.delete(poll)
-    }
-
-    override fun answer(answer: AnswerDTO) {
-        if (validateAnswer(answer)) {
-            val answerDocument = Answer(answer, 1)
-            answerCrudRepository.save(answerDocument)
+            if (poll.published) {
+                throw BadRequestException("Poll has already published")
+            }
+            poll.published = true
+            pollCrudRepository.save(poll)
         } else {
-            throw BadRequestException("Answer is invalid")
+            throw ForbiddenException("Token is invalid")
         }
     }
 
-    override fun changeAvailability(pollID: String) {
-        val pollOptional = pollCrudRepository.findById(pollID)
-        if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
+    override fun edit(token: String, poll: PollDTO) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 3)) throw ForbiddenException("You cannot edit polls")
+            if (poll.id == null) throw BadRequestException("Given null poll ID")
 
-        val poll = pollOptional.get()
-        poll.available = !poll.available
-        pollCrudRepository.save(poll)
+            val pollOptional = pollCrudRepository.findById(poll.id)
+            if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
+            val pollDocument = pollOptional.get()
+
+            if (!validatePoll(poll)) throw BadRequestException("Poll is invalid")
+
+            val answers = answerCrudRepository.findAllByPollID(poll.id)
+            if (answers.isNotEmpty()) throw BadRequestException("Poll has already been answered")
+
+            pollDocument.update(poll)
+            pollCrudRepository.save(pollDocument)
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
+    }
+
+    override fun delete(token: String, pollID: String) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 3)) throw ForbiddenException("You cannot delete polls")
+            val pollOptional = pollCrudRepository.findById(pollID)
+            if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
+            val poll = pollOptional.get()
+
+            answerCrudRepository.deleteAllByPollID(poll.id!!)
+            pollCrudRepository.delete(poll)
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
+    }
+
+    override fun answer(token: String, answer: AnswerDTO) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 1, 1)) throw ForbiddenException("You cannot answer polls")
+            if (validateAnswer(answer)) {
+                val answerDocument = Answer(answer, 1)
+                answerCrudRepository.save(answerDocument)
+            } else {
+                throw BadRequestException("Answer is invalid")
+            }
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
+    }
+
+    override fun changeAvailability(token: String, pollID: String) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 3)) throw ForbiddenException("You cannot change the availability of poll")
+            val pollOptional = pollCrudRepository.findById(pollID)
+            if (pollOptional.isEmpty) throw NotFoundException("Poll with given ID not found")
+
+            val poll = pollOptional.get()
+            poll.available = !poll.available
+            pollCrudRepository.save(poll)
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
     }
 
     private fun validateAnswer(answer: AnswerDTO) : Boolean {

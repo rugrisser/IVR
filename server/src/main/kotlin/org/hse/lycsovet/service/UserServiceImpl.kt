@@ -1,6 +1,5 @@
 package org.hse.lycsovet.service
 
-import io.jsonwebtoken.ExpiredJwtException
 import org.hse.lycsovet.*
 import org.hse.lycsovet.http.EljurHTTPResponse
 import org.hse.lycsovet.http.EljurHTTPService
@@ -101,7 +100,6 @@ class UserServiceImpl(
 
             var jwtToken: JWTToken? = null
             try {
-                logger.info("Test")
                 jwtToken = JWTToken(token)
             } catch (exception: Exception) {
                 throw ForbiddenException("Token is invalid")
@@ -171,6 +169,28 @@ class UserServiceImpl(
         }
 
         throw ForbiddenException("Token is invalid")
+    }
+
+    fun checkRoleLevel(token: String, start: Int, end: Int): Boolean {
+        if (validate(token)) {
+            val token = removeTokenPrefix(token)
+
+            var jwtToken: JWTToken? = null
+            try {
+                jwtToken = JWTToken(token)
+            } catch (exception: Exception) {
+                throw ForbiddenException("Token is invalid")
+            }
+
+            val userOptional = userCrudRepository.findById(jwtToken.id)
+            if (userOptional.isEmpty) return false
+            val user = userOptional.get()
+            val roleLevel = user.role.level
+
+            return roleLevel in start..end
+        }
+
+        return false
     }
 
     private fun removeTokenPrefix(token: String) : String {
