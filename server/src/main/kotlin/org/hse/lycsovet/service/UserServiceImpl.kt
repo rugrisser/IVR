@@ -1,5 +1,6 @@
 package org.hse.lycsovet.service
 
+import io.jsonwebtoken.ExpiredJwtException
 import org.hse.lycsovet.*
 import org.hse.lycsovet.http.EljurHTTPResponse
 import org.hse.lycsovet.http.EljurHTTPService
@@ -73,6 +74,103 @@ class UserServiceImpl(
             logger.error("[JWT] {}", exception.message)
             false
         }
+    }
+
+    override fun getRole(token: String): Role {
+        if (validate(token)) {
+            val token = removeTokenPrefix(token)
+
+            try {
+                val jwtToken = JWTToken(token)
+                val userOptional: Optional<User> = userCrudRepository.findById(jwtToken.id)
+
+                if (userOptional.isPresent) return userOptional.get().role
+
+                throw ForbiddenException("User not found")
+            } catch (exception: Exception) {
+                throw ForbiddenException("Token is invalid")
+            }
+        }
+
+        throw ForbiddenException("Token is invalid")
+    }
+
+    override fun setRole(token: String, roleName: String, id: Long) {
+        if (validate(token)) {
+            val token = removeTokenPrefix(token)
+
+            var jwtToken: JWTToken? = null
+            try {
+                logger.info("Test")
+                jwtToken = JWTToken(token)
+            } catch (exception: Exception) {
+                throw ForbiddenException("Token is invalid")
+            }
+
+            val userOptional = userCrudRepository.findById(jwtToken.id)
+            if (userOptional.isEmpty) throw ForbiddenException("User not found")
+            val user = userOptional.get()
+
+            if (user.role.name != "admin" && user.role.name != "chairman") throw ForbiddenException("Access not granted")
+            if (user.id == id) throw BadRequestException("You cannot change your own role")
+
+            val targetUserOptional = userCrudRepository.findById(id)
+            if (targetUserOptional.isEmpty) throw NotFoundException("User with given ID not found")
+            val targetUser = targetUserOptional.get()
+
+            val roleOptional = roleCrudRepository.findByName(roleName)
+            if (roleOptional.isEmpty) throw BadRequestException("Role not found")
+            val role = roleOptional.get()
+            if (user.role.level < role.level) throw ForbiddenException("You cannot set this role")
+            targetUser.role = role
+            userCrudRepository.save(user)
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
+    }
+
+    override fun getUser(token: String): User {
+        if (validate(token)) {
+            val token = removeTokenPrefix(token)
+
+            try {
+                val jwtToken = JWTToken(token)
+                val userOptional: Optional<User> = userCrudRepository.findById(jwtToken.id)
+
+                if (userOptional.isPresent) return userOptional.get()
+
+                throw ForbiddenException("User not found")
+            } catch (exception: Exception) {
+                throw ForbiddenException("Token is invalid")
+            }
+        }
+
+        throw ForbiddenException("Token is invalid")
+    }
+
+    override fun getUser(token: String, id: Long): User {
+        if (validate(token)) {
+            val token = removeTokenPrefix(token)
+
+            try {
+                val jwtToken = JWTToken(token)
+                val userOptional = userCrudRepository.findById(jwtToken.id)
+                if (userOptional.isEmpty) throw ForbiddenException("User not found")
+                val user = userOptional.get()
+
+                if (user.role.name != "admin" && user.role.name != "chairman") throw ForbiddenException("Access not granted")
+                if (user.id == id) return user
+
+                val targetUserOptional = userCrudRepository.findById(id)
+                if (targetUserOptional.isEmpty) throw NotFoundException("User with given ID not found")
+
+                return targetUserOptional.get()
+            } catch (exception: Exception) {
+                throw ForbiddenException("Token is invalid")
+            }
+        }
+
+        throw ForbiddenException("Token is invalid")
     }
 
     private fun removeTokenPrefix(token: String) : String {

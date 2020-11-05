@@ -1,5 +1,6 @@
 package org.hse.lycsovet
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import java.util.*
 import javax.persistence.*
@@ -33,10 +34,13 @@ data class AppealStatus(
 @Table(name = "roles")
 data class Role(
         @Id
+        @JsonIgnore
         @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long?,
         @Column(unique = true)
-        val name: String
+        val name: String,
+        @JsonIgnore
+        val level: Int
 )
 
 @Entity
@@ -49,13 +53,15 @@ data class User(
         @Column(unique = true)
         val login: String,
         @ManyToOne
-        val role: Role,
+        var role: Role,
         val grade: Int,
         @Enumerated(EnumType.STRING)
         val stream: Stream,
         val name: String,
         var actual: Boolean = false,
+        @JsonIgnore
         val created: Date = Date(),
+        @JsonIgnore
         var updated: Date = Date()
 )
 

@@ -26,6 +26,10 @@ interface SupportService {
 interface UserService {
     fun login(login: String, password: String) : String
     fun validate(token: String) : Boolean
+    fun getRole(token: String) : Role
+    fun setRole(token: String, roleName: String, id: Long)
+    fun getUser(token: String) : User
+    fun getUser(token: String, id: Long) : User
 }
 interface PollService {
     fun get(id: String): Poll

@@ -34,3 +34,6 @@ data class AnswerDTO(
         val pollID: String,
         val content: List<List<Any?>>
 )
+data class SetRoleDTO(
+        val name: String
+)

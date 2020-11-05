@@ -26,10 +26,10 @@ class DataLoader(
         logger.info("[DATA LOADER] Role creating start")
 
         val roles: Array<Role> = arrayOf(
-            Role(null, "user"),
-            Role(null, "deputy"),
-            Role(null, "chairman"),
-            Role(null, "admin")
+            Role(null, "user", 1),
+            Role(null, "deputy", 2),
+            Role(null, "chairman", 3),
+            Role(null, "admin", 4)
         )
 
         roles.forEach { role: Role ->
