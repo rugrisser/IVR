@@ -69,7 +69,10 @@ class DataLoader(
                 User(null, "chairman@edu.hse.ru", chairmanRole)
         )
         users.forEach { user: User ->
-            userCrudRepository.save(user)
+            val userOptional = userCrudRepository.findByEmail(user.email)
+            if (userOptional.isEmpty) {
+                userCrudRepository.save(user)
+            }
         }
 
         logger.info("[DATA LOADER] Test user creating end")

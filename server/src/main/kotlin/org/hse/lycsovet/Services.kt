@@ -24,3 +24,14 @@ interface SupportService {
     fun close(id: Long, message: String)
 }
 interface UserService
+interface PollService {
+    fun get(id: String): Poll
+    fun getListByAppeal(appealID: Long): List<Poll>
+    fun answers(id: String): List<Answer>
+    fun create(poll: PollDTO): String?
+    fun publish(pollID: String)
+    fun edit(poll: PollDTO)
+    fun delete(pollID: String)
+    fun answer(answer: AnswerDTO)
+    fun changeAvailability(pollID: String)
+}
