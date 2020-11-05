@@ -10,7 +10,7 @@
       <div class="col-12 col-md-6 sidebar"></div>
       <div class="col-12 col-md-6 appeals-feed">
         <div class="head">
-          <div class="buttons">
+          <div v-if="user" class="buttons">
             <div @click="$router.push('/appeals/edit')">
               <img src="/img/ui/plus.svg" />
               <span>Создать обращение</span>
@@ -37,7 +37,7 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import AppealCard from '~/components/AppealCard.vue'
@@ -53,11 +53,14 @@
         allAppeals: [],
         ownAppeals: [],
         ownView: false,
+        user: false,
       }
     },
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
       }),
       appeals(): Array<?> {
         return this.ownView ? this.ownAppeals.reverse() : this.allAppeals.reverse()
@@ -66,13 +69,39 @@
         return this.ownAppeals.length
       }
     },
+    methods: {
+      ...mapActions(['updateToken']),
+    },
     mounted() {
+      this.$store.dispatch('updateToken')
       this.$axios.$get('/appeal').then((response) => {
         this.allAppeals = response
       })
-      this.$axios.$get('/appeal/own').then((response) => {
+      this.$axios.$get('/appeal/own', {
+        headers: {
+          'Authorization': 'Bearer ' + this.token,
+        },
+      }).then((response) => {
         this.ownAppeals = response
       })
+      if (this.logged) {
+        this.$axios
+          .$get('/user/getRole', {
+            headers: {
+              'Authorization': 'Bearer ' + this.token,
+            },
+          })
+          .then((response) => {
+            if (response.name === 'user') {
+              this.user = true
+            } else {
+              this.user = false
+            }
+          })
+          .catch(() => this.user = false)
+      } else {
+        this.user = false
+      }
     },
   })
 </script>

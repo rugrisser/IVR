@@ -30,7 +30,7 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import Ticket from '~/components/Ticket.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
@@ -49,12 +49,42 @@
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
       }),
     },
+    methods: {
+      ...mapActions(['updateToken']),
+    },
     mounted() {
-      this.$axios.$get('/support').then((response) => {
-        this.tickets = response.reverse()
-      })
+      this.$store.dispatch('updateToken')
+
+      if (this.logged) {
+        this.$axios
+          .$get('/user/getRole', {
+            headers: {
+              Authorization: 'Bearer ' + this.token,
+            },
+          })
+          .then((response) => {
+            if (response.name === 'admin') {
+              this.$router.push('/admin')
+            }
+          })
+          .catch(() => this.$router.push('/login'))
+      } else {
+        this.$router.push('/login')
+      }
+
+      this.$axios
+        .$get('/support', {
+          headers: {
+            Authorization: 'Bearer ' + this.token,
+          },
+        })
+        .then((response) => {
+          this.tickets = response.reverse()
+        })
     },
   })
 </script>

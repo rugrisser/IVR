@@ -39,10 +39,11 @@ class UserServiceImpl(
             throw InternalServerErrorException("An error occurred while server tried to contact with Eljur API. Try later")
         }
 
-        if (response.code() != 200) {
+        if (response.code() != 200 && response.code() != 400) {
             logger.error("[ELJUR API] GOT STATUS CODE {}", response.code())
             throw InternalServerErrorException("An error occurred while server tried to contact with Eljur API. Try later")
         }
+        if (response.code() == 400) throw ForbiddenException("Incorrect login or password")
 
         val body = response.body()!!.response
         val token = body.result.token
@@ -55,7 +56,7 @@ class UserServiceImpl(
             user
         }
 
-        val jwtToken: JWTToken = JWTToken(user)
+        val jwtToken = JWTToken(user)
         return jwtToken.createToken()
     }
 
