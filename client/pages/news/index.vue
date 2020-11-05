@@ -5,12 +5,12 @@
         <div style="margin: 0 auto 48px">
           <Logo color="black" />
         </div>
-        <SidebarMenu :items="menuItems" />
+        <SidebarMenu :logged="logged" :items="menuItems" />
       </div>
       <div class="col-12 col-md-6 sidebar"></div>
       <div class="col-12 col-md-6 news-feed">
         <div class="news-feed-head">
-          <div class="button" @click="$router.push('/news/edit')">
+          <div v-if="admin" class="button" @click="$router.push('/news/edit')">
             <img src="/img/ui/plus.svg" />
             <span>Новая статья</span>
           </div>
@@ -32,7 +32,7 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import ArticleCard from '~/components/ArcticleCard.vue'
@@ -46,17 +46,38 @@
     data() {
       return {
         articles: [],
+        admin: false,
       }
     },
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
       }),
     },
     mounted() {
+      this.$store.dispatch('updateToken')
       this.$axios.$get('/news').then((response) => {
         this.articles = response.reverse()
       })
+      if (this.logged) {
+        this.$axios
+          .$get('/user/getRole', {
+            headers: {
+              'Authorization': 'Bearer ' + this.token,
+            },
+          })
+          .then((response) => {
+            if (response.name !== 'user') {
+              this.admin = true
+            }
+          })
+          .catch(() => (this.admin = false))
+      }
+    },
+    methods: {
+      ...mapActions(['updateToken']),
     },
   })
 </script>

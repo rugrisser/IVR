@@ -1,8 +1,13 @@
 package org.hse.lycsovet
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import java.util.*
 import javax.persistence.*
+
+enum class Stream {
+        MATHINFO, MATHEC, MATH, SOCEC, HUM, PSYSOC, LAW, ORIENTAL, DESIGN, SCIENCE, FUTURITET, UNKNOWN
+}
 
 @Entity
 @Table(name = "appeal_types")
@@ -29,10 +34,13 @@ data class AppealStatus(
 @Table(name = "roles")
 data class Role(
         @Id
+        @JsonIgnore
         @GeneratedValue(strategy = GenerationType.AUTO)
         val id: Long?,
         @Column(unique = true)
-        val name: String
+        val name: String,
+        @JsonIgnore
+        val level: Int
 )
 
 @Entity
@@ -43,10 +51,18 @@ data class User(
         val id: Long?,
 
         @Column(unique = true)
-        val email: String,
+        val login: String,
         @ManyToOne
-        val role: Role,
-        val created: Date = Date()
+        var role: Role,
+        val grade: Int,
+        @Enumerated(EnumType.STRING)
+        val stream: Stream,
+        val name: String,
+        var actual: Boolean = false,
+        @JsonIgnore
+        val created: Date = Date(),
+        @JsonIgnore
+        var updated: Date = Date()
 )
 
 @Entity

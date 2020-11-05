@@ -1,4 +1,5 @@
 export interface IStoreState {
+  token: String,
   menu: {
     sidebar: {
       items: MenuItem[]

@@ -6,6 +6,7 @@ import java.util.*
 
 @Service
 class NewsServiceImpl(
+        private val userService: UserServiceImpl,
         private val newsCrudRepository: NewsCrudRepository
 ) : NewsService {
     override fun get(id: Long): Article {
@@ -25,53 +26,72 @@ class NewsServiceImpl(
         return newsCrudRepository.findAllByPublished(true)
     }
 
-    override fun publish(articleDTO: ArticleDTO): Long? {
-        if (articleDTO.publish == null) {
-            articleDTO.publish = false
+    override fun publish(token: String, articleDTO: ArticleDTO): Long? {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 4)) throw ForbiddenException("You cannot publish articles")
+            if (articleDTO.publish == null) {
+                articleDTO.publish = false
+            }
+            val article = Article(null, articleDTO.title, articleDTO.description, articleDTO.text, articleDTO.publish!!)
+            newsCrudRepository.save(article)
+            return article.id
         }
-        val article = Article(null, articleDTO.title, articleDTO.description, articleDTO.text, articleDTO.publish!!)
-        newsCrudRepository.save(article)
-        return article.id
+
+        throw ForbiddenException("Token is invalid")
     }
 
-    override fun publish(id: Long) {
-        val articleOptional = newsCrudRepository.findById(id)
-        if (articleOptional.isEmpty) {
-            throw NotFoundException("Article not found")
-        }
+    override fun publish(token: String, id: Long) {
+        if (userService.validate(token)) {
+            val articleOptional = newsCrudRepository.findById(id)
+            if (articleOptional.isEmpty) {
+                throw NotFoundException("Article not found")
+            }
 
-        val article = articleOptional.get()
-        if (article.published) {
-            throw BadRequestException("Article already published")
-        }
+            val article = articleOptional.get()
+            if (article.published) {
+                throw BadRequestException("Article already published")
+            }
 
-        article.published = true
-        newsCrudRepository.save(article)
+            article.published = true
+            newsCrudRepository.save(article)
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
     }
 
-    override fun edit(articleDTO: ArticleDTO) {
-        if (articleDTO.id == null) {
-            throw BadRequestException("Article ID not given")
-        }
-        val articleOptional = newsCrudRepository.findById(articleDTO.id)
-        if (articleOptional.isEmpty) {
-            throw NotFoundException("Article not found")
-        }
+    override fun edit(token: String, articleDTO: ArticleDTO) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 4)) throw ForbiddenException("You cannot edit articles")
+            if (articleDTO.id == null) {
+                throw BadRequestException("Article ID not given")
+            }
+            val articleOptional = newsCrudRepository.findById(articleDTO.id)
+            if (articleOptional.isEmpty) {
+                throw NotFoundException("Article not found")
+            }
 
-        val article = articleOptional.get()
-        article.title = articleDTO.title
-        article.text = articleDTO.text
-        article.description = articleDTO.description
-        article.updated = Date()
+            val article = articleOptional.get()
+            article.title = articleDTO.title
+            article.text = articleDTO.text
+            article.description = articleDTO.description
+            article.updated = Date()
 
-        newsCrudRepository.save(article)
+            newsCrudRepository.save(article)
+        } else {
+            throw ForbiddenException("Token is invalid")
+        }
     }
 
-    override fun delete(id: Long) {
-        val articleOptional = newsCrudRepository.findById(id)
-        if (articleOptional.isEmpty) {
-            throw NotFoundException("Article not found")
+    override fun delete(token: String, id: Long) {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 2, 4)) throw ForbiddenException("You cannot delete articles")
+            val articleOptional = newsCrudRepository.findById(id)
+            if (articleOptional.isEmpty) {
+                throw NotFoundException("Article not found")
+            }
+            newsCrudRepository.delete(articleOptional.get())
+        } else {
+            throw ForbiddenException("Token is invalid")
         }
-        newsCrudRepository.delete(articleOptional.get())
     }
 }

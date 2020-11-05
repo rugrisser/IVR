@@ -45,7 +45,7 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import FormInput from '~/components/form/FormInput.vue'
@@ -74,9 +74,32 @@
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
       }),
     },
     mounted() {
+      this.$store.dispatch('updateToken')
+
+      if (!this.logged) {
+        this.$router.push('/news')
+      }
+
+      if (this.logged) {
+        this.$axios
+          .$get('/user/getRole', {
+            headers: {
+              'Authorization': 'Bearer ' + this.token,
+            },
+          })
+          .then((response) => {
+            if (response.name === 'user') {
+              this.$router.push('/news')
+            }
+          })
+          .catch(() => this.$router.push('/news'))
+      }
+
       const id = parseInt(this.$route.params.id)
 
       if (isNaN(id)) {
@@ -97,6 +120,7 @@
       }
     },
     methods: {
+      ...mapActions(['updateToken']),
       submit(publish: Boolean) {
         if (this.isEdit) {
           const body = {
@@ -108,7 +132,11 @@
           }
 
           this.$axios
-            .$put('/news/', body)
+            .$put('/news/', body, {
+              headers: {
+                'Authorization': 'Bearer ' + this.token,
+              },
+            })
             .then(() => {
               this.$router.push('/news/' + this.id)
             })
@@ -124,7 +152,11 @@
           }
 
           this.$axios
-            .$post('/news', body)
+            .$post('/news', body, {
+              headers: {
+                'Authorization': 'Bearer ' + this.token,
+              },
+            })
             .then((response) => {
               this.$router.push('/news/' + response.id)
             })

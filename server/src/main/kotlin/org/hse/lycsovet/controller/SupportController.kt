@@ -14,22 +14,31 @@ class SupportController(
 ) {
 
     @GetMapping
-    fun get() : ResponseEntity<List<Ticket>> {
-        return ResponseEntity.ok(supportService.get())
+    fun get(
+            @RequestHeader("Authorization") token: String
+    ) : ResponseEntity<List<Ticket>> {
+        return ResponseEntity.ok(supportService.get(token))
     }
 
     @PostMapping
-    fun create(@RequestBody body: TicketDTO) : ResponseEntity<Map<String, Any?>> {
+    fun create(
+            @RequestHeader("Authorization") token: String,
+            @RequestBody body: TicketDTO
+    ) : ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        result["id"] = supportService.create(body)
+        result["id"] = supportService.create(token, body)
 
         return ResponseEntity.ok(result)
     }
 
     @PutMapping("/{id}")
-    fun close(@PathVariable id: Long, @RequestBody body: TicketDTO) : ResponseEntity<Map<String, Any?>> {
+    fun close(
+            @RequestHeader("Authorization") token: String,
+            @PathVariable id: Long,
+            @RequestBody body: TicketDTO
+    ) : ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        supportService.close(id, body.text)
+        supportService.close(token, id, body.text)
         result["status"] = "ok"
 
         return ResponseEntity.ok(result)

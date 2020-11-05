@@ -13,6 +13,7 @@
           <h1>{{ article.title }}</h1>
           <img
             src="/img/ui/pen.svg"
+            v-if="admin"
             @click="$router.push('/news/edit/' + articleID)"
           />
         </div>
@@ -49,11 +50,14 @@
           title: '',
           text: '',
         },
+        admin: false,
       }
     },
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
       }),
       text() {
         const paragraphs = this.article.text.split('\n')
@@ -77,6 +81,24 @@
       },
     },
     mounted() {
+      this.$store.dispatch('updateToken')
+      if (this.logged) {
+        this.$axios
+          .$get('/user/getRole', {
+            headers: {
+              'Authorization': 'Bearer ' + this.token,
+            },
+          })
+          .then((response) => {
+            if (response.name !== 'user') {
+              this.admin = true
+            }
+          })
+          .catch(() => (this.admin = false))
+      } else {
+        this.admin = false
+      }
+
       const parsed = parseInt(this.$route.params.id)
       if (isNaN(parsed)) {
         this.$router.push('/news')

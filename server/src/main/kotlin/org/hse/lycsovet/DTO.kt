@@ -22,3 +22,18 @@ data class AppealDTO(
 data class TicketDTO(
         val text: String
 )
+data class PollDTO(
+        val id: String?,
+        val appealID: Long?,
+        val available: Boolean,
+        val published: Boolean,
+        val target: List<String>,
+        val content: List<List<Question>>
+)
+data class AnswerDTO(
+        val pollID: String,
+        val content: List<List<Any?>>
+)
+data class SetRoleDTO(
+        val name: String
+)

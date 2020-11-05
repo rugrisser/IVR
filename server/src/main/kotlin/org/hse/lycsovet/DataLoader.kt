@@ -17,7 +17,7 @@ class DataLoader(
     override fun run(args: ApplicationArguments?) {
         logger.info("[DATA LOADER] Init")
         createRoles()
-        createTestUsers()
+//        createTestUsers()
         createAppealTypes()
         createAppealStatuses()
     }
@@ -26,10 +26,10 @@ class DataLoader(
         logger.info("[DATA LOADER] Role creating start")
 
         val roles: Array<Role> = arrayOf(
-            Role(null, "user"),
-            Role(null, "deputy"),
-            Role(null, "chairman"),
-            Role(null, "admin")
+            Role(null, "user", 1),
+            Role(null, "deputy", 2),
+            Role(null, "chairman", 3),
+            Role(null, "admin", 4)
         )
 
         roles.forEach { role: Role ->
@@ -63,14 +63,17 @@ class DataLoader(
         val adminRole = adminRoleOptional.get()
         val chairmanRole = chairmanRoleOptional.get()
 
-        val users: Array<User> = arrayOf(
+        /*val users: Array<User> = arrayOf(
                 User(null, "student@edu.hse.ru", userRole),
                 User(null, "admin@edu.hse.ru", adminRole),
                 User(null, "chairman@edu.hse.ru", chairmanRole)
         )
         users.forEach { user: User ->
-            userCrudRepository.save(user)
-        }
+            val userOptional = userCrudRepository.findByLogin(user.login)
+            if (userOptional.isEmpty) {
+                userCrudRepository.save(user)
+            }
+        }*/
 
         logger.info("[DATA LOADER] Test user creating end")
     }

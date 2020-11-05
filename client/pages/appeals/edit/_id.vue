@@ -77,7 +77,7 @@
 
 <script lang="ts">
   import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import FormInput from '~/components/form/FormInput.vue'
@@ -111,10 +111,33 @@
     computed: {
       ...mapGetters({
         menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
       }),
     },
+    methods: {
+      ...mapActions(['updateToken']),
+    },
     mounted() {
+      this.$store.dispatch('updateToken')
       const id = parseInt(this.$route.params.id)
+
+      if (this.logged) {
+        this.$axios
+          .$get('/user/getRole', {
+            headers: {
+              'Authorization': 'Bearer ' + this.token,
+            },
+          })
+          .then((response) => {
+            if (response.name !== 'user') {
+              this.$router.push('/appeals')
+            }
+          })
+          .catch(() => this.$router.push('/login'))
+      } else {
+        this.$router.push('/login')
+      }
 
       if (isNaN(id)) {
         this.isEdit = false
@@ -185,7 +208,11 @@
           }
 
           this.$axios
-            .$put('/appeal', body)
+            .$put('/appeal', body, {
+              headers: {
+                'Authorization': 'Bearer ' + this.token,
+              },
+            })
             .then((response) => {
               this.$router.push('/appeals/' + this.id)
             })
@@ -202,7 +229,11 @@
           }
 
           this.$axios
-            .$post('/appeal', body)
+            .$post('/appeal', body, {
+              headers: {
+                'Authorization': 'Bearer ' + this.token,
+              },
+            })
             .then((response) => {
               const id = response.id
               this.$router.push('/appeals/' + id)

@@ -24,8 +24,10 @@ class AppealController(
     }
 
     @GetMapping("/own")
-    fun own() : ResponseEntity<List<Appeal>> {
-        return ResponseEntity.ok(appealServiceImpl.own())
+    fun own(
+            @RequestHeader("Authorization") token: String
+    ) : ResponseEntity<List<Appeal>> {
+        return ResponseEntity.ok(appealServiceImpl.own(token))
     }
 
     @GetMapping
@@ -34,26 +36,35 @@ class AppealController(
     }
 
     @PostMapping
-    fun create(@RequestBody appealDTO: AppealDTO) : ResponseEntity<Map<String, Any?>> {
+    fun create(
+            @RequestHeader("Authorization") token: String,
+            @RequestBody appealDTO: AppealDTO
+    ) : ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        result["id"] = appealServiceImpl.create(appealDTO)
+        result["id"] = appealServiceImpl.create(token, appealDTO)
 
         return ResponseEntity.ok(result)
     }
 
     @PutMapping
-    fun edit(@RequestBody appealDTO: AppealDTO) : ResponseEntity<Map<String, Any?>> {
+    fun edit(
+            @RequestHeader("Authorization") token: String,
+            @RequestBody appealDTO: AppealDTO
+    ) : ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        appealServiceImpl.edit(appealDTO)
+        appealServiceImpl.edit(token, appealDTO)
         result["status"] = "ok"
 
         return ResponseEntity.ok(result)
     }
 
     @PutMapping("/changeStatus")
-    fun changeStatus(@RequestBody body: ChangeAppealStatusDTO) : ResponseEntity<Map<String, Any?>> {
+    fun changeStatus(
+            @RequestHeader("Authorization") token: String,
+            @RequestBody body: ChangeAppealStatusDTO
+    ) : ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        appealServiceImpl.changeStatus(body.id, body.status)
+        appealServiceImpl.changeStatus(token, body.id, body.status)
         result["status"] = "ok"
 
         return ResponseEntity.ok(result)

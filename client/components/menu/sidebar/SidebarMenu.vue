@@ -16,6 +16,8 @@
 
 <script lang="ts">
   import Vue from 'vue'
+  import { mapGetters, mapActions } from 'vuex'
+
   export default Vue.extend({
     name: 'SidebarMenu',
     props: {
@@ -30,6 +32,13 @@
         hoveredIconLinkAlias: '/img/ui/menu/icon/primary_dark/',
       }
     },
+    computed: {
+      ...mapGetters({
+        menuItems: 'getSidebarMenuItems',
+        logged: 'isLogged',
+        token: 'getToken',
+      }),
+    },
     methods: {
       defaultIconLink(icon: string): string {
         return this.deafultIconLinkAlias + icon
@@ -37,6 +46,15 @@
       hoveredIconLink(icon: string): string {
         return this.hoveredIconLinkAlias + icon
       },
+    },
+    mounted() {
+      if (this.logged) {
+        for (const index in this.items) {
+          if (this.items[index].link === '/login') {
+            console.log("YAHOOO")
+          }
+        }
+      }
     },
   })
 </script>

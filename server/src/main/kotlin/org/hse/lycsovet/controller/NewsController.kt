@@ -28,8 +28,11 @@ class NewsController(
     }
 
     @PostMapping
-    fun publish(@RequestBody articleDTO: ArticleDTO): ResponseEntity<Map<String, Any?>> {
-        val id = newsService.publish(articleDTO)
+    fun publish(
+            @RequestHeader("Authorization") token: String,
+            @RequestBody articleDTO: ArticleDTO
+    ): ResponseEntity<Map<String, Any?>> {
+        val id = newsService.publish(token, articleDTO)
         val result = HashMap<String, Any?>()
 
         result["id"] = id
@@ -38,27 +41,36 @@ class NewsController(
     }
 
     @PutMapping("/{id}")
-    fun publish(@PathVariable id: Long): ResponseEntity<Map<String, Any?>> {
+    fun publish(
+            @RequestHeader("Authorization") token: String,
+            @PathVariable id: Long
+    ): ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        newsService.publish(id)
+        newsService.publish(token, id)
         result["status"] = "ok"
 
         return ResponseEntity.ok(result)
     }
 
     @PutMapping
-    fun edit(@RequestBody articleDTO: ArticleDTO): ResponseEntity<Map<String, Any?>> {
+    fun edit(
+            @RequestHeader("Authorization") token: String,
+            @RequestBody articleDTO: ArticleDTO
+    ): ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        newsService.edit(articleDTO)
+        newsService.edit(token, articleDTO)
         result["status"] = "ok"
 
         return ResponseEntity.ok(result)
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long): ResponseEntity<Map<String, Any?>> {
+    fun delete(
+            @RequestHeader("Authorization") token: String,
+            @PathVariable id: Long
+    ): ResponseEntity<Map<String, Any?>> {
         val result = HashMap<String, Any?>()
-        newsService.delete(id)
+        newsService.delete(token, id)
         result["status"] = "ok"
 
         return ResponseEntity.ok(result)
