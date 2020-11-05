@@ -22,4 +22,14 @@ class UserController(
 
         return ResponseEntity.ok(result)
     }
+
+    @GetMapping("/validate")
+    fun validate(
+            @RequestHeader("Authorization") token: String
+    ) : ResponseEntity<Map<String, Any>> {
+        val result = HashMap<String, Any>()
+        result["result"] = userService.validate(token)
+
+        return ResponseEntity.ok(result)
+    }
 }

@@ -1,8 +1,6 @@
 package org.hse.lycsovet.module
 
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.*
 import lombok.Getter
 import org.hse.lycsovet.User
 import java.util.*
@@ -12,24 +10,21 @@ class JWTToken {
     private val LIFETIME: Long = 86400000L
     private val SECRET: String = "tevoscyl"
 
-    @Getter
-    private var id: Long
-    @Getter
-    private var login: String
-    @Getter
-    private var issued: Date? = null
-    @Getter
-    private var expiration: Date? = null
+    var id: Long
+    var login: String
+    var issued: Date? = null
+    var expiration: Date? = null
 
     constructor(user: User) {
         id = user.id!!
         login = user.login
     }
 
+    @Throws(exceptionClasses = [ExpiredJwtException::class, InvalidClaimException::class])
     constructor(token: String) {
         val body: Claims = Jwts.parser().setSigningKey(SECRET).parse(token).body as Claims
         login = body.subject
-        id = body["id"] as Long
+        id = body["id"].toString().toLong()
         issued = body.issuedAt
         expiration = body.expiration
     }

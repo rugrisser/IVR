@@ -24,7 +24,8 @@ interface SupportService {
     fun close(id: Long, message: String)
 }
 interface UserService {
-    fun login(login: String, password: String): String
+    fun login(login: String, password: String) : String
+    fun validate(token: String) : Boolean
 }
 interface PollService {
     fun get(id: String): Poll

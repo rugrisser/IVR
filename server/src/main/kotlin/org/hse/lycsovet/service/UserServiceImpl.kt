@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
 
 @Service
-class UserServiceImpl (
+class UserServiceImpl(
         private val logger: Logger,
         private val userCrudRepository: UserCrudRepository,
         private val roleCrudRepository: RoleCrudRepository,
@@ -56,6 +57,26 @@ class UserServiceImpl (
 
         val jwtToken: JWTToken = JWTToken(user)
         return jwtToken.createToken()
+    }
+
+    override fun validate(token: String) : Boolean {
+        if (!token.startsWith("Bearer ")) return false
+        val token = removeTokenPrefix(token)
+
+        return try {
+            val jwtToken = JWTToken(token)
+            val userOptional: Optional<User> = userCrudRepository.findById(jwtToken.id)
+
+            userOptional.isPresent
+        } catch (exception: Exception) {
+            logger.error("[JWT] TOKEN IS INVALID")
+            logger.error("[JWT] {}", exception.message)
+            false
+        }
+    }
+
+    private fun removeTokenPrefix(token: String) : String {
+        return token.substring(7)
     }
 
     private fun updateUserInfo(login: String, token: String) : User {
