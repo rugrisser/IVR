@@ -23,7 +23,9 @@ interface SupportService {
     fun create(ticketDTO: TicketDTO) : Long?
     fun close(id: Long, message: String)
 }
-interface UserService
+interface UserService {
+    fun login(login: String, password: String): String
+}
 interface PollService {
     fun get(id: String): Poll
     fun getListByAppeal(appealID: Long): List<Poll>

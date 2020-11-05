@@ -4,6 +4,10 @@ import org.springframework.data.annotation.CreatedDate
 import java.util.*
 import javax.persistence.*
 
+enum class Stream {
+        MATHINFO, MATHEC, MATH, SOCEC, HUM, PSYSOC, LAW, ORIENTAL, DESIGN, SCIENCE, FUTURITET, UNKNOWN
+}
+
 @Entity
 @Table(name = "appeal_types")
 data class AppealType(
@@ -43,10 +47,16 @@ data class User(
         val id: Long?,
 
         @Column(unique = true)
-        val email: String,
+        val login: String,
         @ManyToOne
         val role: Role,
-        val created: Date = Date()
+        val grade: Int,
+        @Enumerated(EnumType.STRING)
+        val stream: Stream,
+        val name: String,
+        var actual: Boolean = false,
+        val created: Date = Date(),
+        var updated: Date = Date()
 )
 
 @Entity

@@ -24,7 +24,7 @@ class AppealServiceImpl (
     }
 
     override fun own(): List<Appeal> {
-        val user = userCrudRepository.findByEmail("student@edu.hse.ru").get()
+        val user = userCrudRepository.findByLogin("student@edu.hse.ru").get()
         return appealCrudRepository.findAllByAuthor(user)
     }
 
@@ -34,7 +34,7 @@ class AppealServiceImpl (
     }
 
     override fun create(appealDTO: AppealDTO) : Long? {
-        val user = userCrudRepository.findByEmail("student@edu.hse.ru").get()
+        val user = userCrudRepository.findByLogin("student@edu.hse.ru").get()
         val appealStatus = appealStatusCrudRepository.findByName("moderation").get()
         val appealType = if (appealDTO.type == "complaint") {
             appealTypeCrudRepository.findByName("complaint").get()

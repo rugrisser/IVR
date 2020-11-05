@@ -14,7 +14,7 @@ class SupportServiceImpl(
     }
 
     override fun create(ticketDTO: TicketDTO) : Long? {
-        val user = userCrudRepository.findByEmail("student@edu.hse.ru").get()
+        val user = userCrudRepository.findByLogin("student@edu.hse.ru").get()
         val ticket = Ticket(null, user, ticketDTO.text)
 
         ticketCrudRepository.save(ticket)
