@@ -10,11 +10,9 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  import MainMenuItem from '~/components/menu/main/MainMenuItem.vue'
-
-  export default Vue.extend({
+<script>
+  import MainMenuItem from '@/components/menu/main/MainMenuItem'
+  export default {
     name: 'MainMenu',
     components: {
       MainMenuItem,
@@ -25,9 +23,7 @@
         required: true,
       },
     },
-  })
+  }
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

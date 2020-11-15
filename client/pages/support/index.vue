@@ -28,14 +28,13 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import Ticket from '~/components/Ticket.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -52,9 +51,6 @@
         logged: 'isLogged',
         token: 'getToken',
       }),
-    },
-    methods: {
-      ...mapActions(['updateToken']),
     },
     mounted() {
       this.$store.dispatch('updateToken')
@@ -86,7 +82,10 @@
           this.tickets = response.reverse()
         })
     },
-  })
+    methods: {
+      ...mapActions(['updateToken']),
+    },
+  }
 </script>
 
 <style lang="scss">

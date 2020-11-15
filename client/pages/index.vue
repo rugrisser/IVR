@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="menu" :class="{ closed: !menuOpened }" ref="menu">
+    <div ref="menu" class="menu" :class="{ closed: !menuOpened }">
       <div class="left-border"></div>
       <div class="content">
         <h1>Меню</h1>
@@ -10,7 +10,7 @@
     <div class="home default-container" @click="closeMenu">
       <div class="row">
         <div class="col-12 col-md-6">
-          <Logo :color="LogoColor.White" text />
+          <Logo color="white" text />
         </div>
         <div class="col-12 col-md-6 d-flex">
           <img
@@ -37,13 +37,12 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  import Logo from '~/components/logo/Logo.vue'
-  import MainMenu from '~/components/menu/main/MainMenu.vue'
-  import { MenuItem, LogoColor } from '~/assets/ts'
+<script>
+  import Logo from '~/components/logo/Logo'
+  import MainMenu from '~/components/menu/main/MainMenu'
+  import { MenuItem } from '~/assets/js'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       MainMenu,
@@ -57,20 +56,19 @@
           new MenuItem('Вход', 'key.svg', '/login'),
         ],
         menuOpened: false,
-        LogoColor,
       }
     },
     methods: {
       openMenu() {
         this.menuOpened = true
       },
-      closeMenu(event: Event) {
+      closeMenu(event) {
         if (event.target !== this.$refs.menuButton) {
           this.menuOpened = false
         }
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss">

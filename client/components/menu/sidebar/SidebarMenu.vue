@@ -14,11 +14,9 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  import { mapGetters, mapActions } from 'vuex'
-
-  export default Vue.extend({
+<script>
+  import { mapGetters } from 'vuex'
+  export default {
     name: 'SidebarMenu',
     props: {
       items: {
@@ -39,26 +37,25 @@
         token: 'getToken',
       }),
     },
-    methods: {
-      defaultIconLink(icon: string): string {
-        return this.deafultIconLinkAlias + icon
-      },
-      hoveredIconLink(icon: string): string {
-        return this.hoveredIconLinkAlias + icon
-      },
-    },
     mounted() {
       if (this.logged) {
         for (const index in this.items) {
           if (this.items[index].link === '/login') {
-            console.log("YAHOOO")
+            console.log('YAHOOO')
           }
         }
       }
     },
-  })
+    methods: {
+      defaultIconLink(icon) {
+        return this.deafultIconLinkAlias + icon
+      },
+      hoveredIconLink(icon) {
+        return this.hoveredIconLinkAlias + icon
+      },
+    },
+  }
 </script>
-
 <style lang="scss">
   .sidebar-menu {
     display: flex;

@@ -33,29 +33,25 @@ export default {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
+    // https://go.nuxtjs.dev/eslint
+    '@nuxtjs/eslint-module',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/content
-    '@nuxt/content',
     '@nuxtjs/style-resources',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://api.lycsovet.ru/',
   },
-
-  // Content module configuration (https://go.nuxtjs.dev/content-config)
-  content: {},
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+
   styleResources: {
     scss: ['./assets/scss/styles.scss'],
   },

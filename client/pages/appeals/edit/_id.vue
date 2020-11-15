@@ -19,11 +19,11 @@
             <div class="appeal-type">
               <div
                 class="appeal-type-card"
-                :class="{ checked: type === AppealType.Proposal }"
-                @click="checkType(AppealType.Proposal)"
+                :class="{ checked: type === 'proposal' }"
+                @click="checkType('proposal')"
               >
                 <img
-                  v-if="type === AppealType.Proposal"
+                  v-if="type === 'proposal'"
                   src="/img/ui/hand_primary.svg"
                 />
                 <img v-else src="/img/ui/hand.svg" />
@@ -31,11 +31,11 @@
               </div>
               <div
                 class="appeal-type-card"
-                :class="{ checked: type === AppealType.Complaint }"
-                @click="checkType(AppealType.Complaint)"
+                :class="{ checked: type === 'complaint' }"
+                @click="checkType('complaint')"
               >
                 <img
-                  v-if="type === AppealType.Complaint"
+                  v-if="type === 'complaint'"
                   src="/img/ui/cross_primary.svg"
                 />
                 <img v-else src="/img/ui/cross.svg" />
@@ -75,8 +75,7 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
@@ -84,9 +83,8 @@
   import FormCheckbox from '~/components/form/FormCheckbox.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
   import SecondaryButton from '~/components/button/SecondaryButton.vue'
-  import { AppealType } from '~/assets/ts/appeal'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -104,8 +102,7 @@
           text: '',
           feedback: [],
         },
-        type: AppealType.Proposal,
-        AppealType,
+        type: 'proposal',
       }
     },
     computed: {
@@ -115,9 +112,6 @@
         token: 'getToken',
       }),
     },
-    methods: {
-      ...mapActions(['updateToken']),
-    },
     mounted() {
       this.$store.dispatch('updateToken')
       const id = parseInt(this.$route.params.id)
@@ -126,7 +120,7 @@
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -148,15 +142,13 @@
         this.$axios
           .$get('/appeal/' + id)
           .then((response) => {
-            // console.log(response)
-
             this.form.title = response.title
             this.form.text = response.text
 
             if (response.type.name === 'complaint') {
-              this.type = AppealType.Complaint
+              this.type = 'complaint'
             } else {
-              this.type = AppealType.Proposal
+              this.type = 'proposal'
             }
 
             if (response.feedback >= 2) {
@@ -174,13 +166,12 @@
       }
     },
     methods: {
-      checkType(type: AppealType): void {
+      ...mapActions(['updateToken']),
+      checkType(type) {
         this.type = type
       },
-      submit(publish: Boolean) {
+      submit(publish) {
         let feedback = 0
-        const type: string =
-          this.type === AppealType.Proposal ? 'proposal' : 'complaint'
 
         if (this.form.feedback.includes('email')) {
           feedback += 1
@@ -189,28 +180,20 @@
           feedback += 2
         }
 
-        const body = {
-          title: this.form.title,
-          text: this.form.text,
-          feedback,
-          type,
-          published: publish,
-        }
-
         if (this.isEdit) {
           const body = {
             id: this.id,
             title: this.form.title,
             text: this.form.text,
             feedback,
-            type,
+            type: this.type,
             published: publish,
           }
 
           this.$axios
             .$put('/appeal', body, {
               headers: {
-                'Authorization': 'Bearer ' + this.token,
+                Authorization: 'Bearer ' + this.token,
               },
             })
             .then((response) => {
@@ -224,14 +207,14 @@
             title: this.form.title,
             text: this.form.text,
             feedback,
-            type,
+            type: this.type,
             published: publish,
           }
 
           this.$axios
             .$post('/appeal', body, {
               headers: {
-                'Authorization': 'Bearer ' + this.token,
+                Authorization: 'Bearer ' + this.token,
               },
             })
             .then((response) => {
@@ -244,7 +227,7 @@
         }
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss">

@@ -23,10 +23,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-
-  export default Vue.extend({
+<script>
+  export default {
     name: 'FormInput',
     props: {
       placeholder: {
@@ -63,8 +61,8 @@
       if (this.password) {
         this.visible = false
       }
-    }
-  })
+    },
+  }
 </script>
 
 <style lang="scss">

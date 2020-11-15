@@ -32,13 +32,12 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -86,7 +85,7 @@
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -114,7 +113,7 @@
           })
       }
     },
-  })
+  }
 </script>
 
 <style lang="scss">

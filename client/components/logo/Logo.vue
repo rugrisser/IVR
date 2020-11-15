@@ -5,11 +5,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  import { LogoColor } from '~/assets/ts'
-
-  export default Vue.extend({
+<script>
+  export default {
     name: 'Logo',
     props: {
       height: {
@@ -38,22 +35,22 @@
       }
     },
     computed: {
-      logoSrc(): string {
-        let color: LogoColor
+      logoSrc() {
+        let color
 
         switch (this.color) {
           case 'white':
-            color = LogoColor.White
+            color = 'white'
             break
           default:
-            color = LogoColor.Black
+            color = 'black'
             break
         }
 
         return this.logoSrcAlias + 'logo_transparent_' + color + '.png'
       },
-      componentStyle(): Object {
-        const height: string = this.fullWidth ? 'auto' : this.height + 'px'
+      componentStyle() {
+        const height = this.fullWidth ? 'auto' : this.height + 'px'
         const result = {
           height,
           width: this.height + 'px',
@@ -64,9 +61,9 @@
         }
 
         return result
-      }
+      },
     },
-  })
+  }
 </script>
 
 <style lang="scss">

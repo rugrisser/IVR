@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { MenuItem, IStoreState } from '~/assets/ts'
+import { MenuItem } from '~/assets/js'
 
 export const state = () => ({
   token: '',
@@ -10,36 +10,36 @@ export const state = () => ({
         new MenuItem('Обращения', 'speaker.svg', '/appeals'),
         new MenuItem('Техподдержка', 'siren.svg', '/support'),
         new MenuItem('Вход', 'key.svg', '/login'),
-      ]
-    }
-  }
-} as IStoreState)
+      ],
+    },
+  },
+})
 
 export const getters = {
-  isLogged(state: IStoreState) {
-    return state.token != ""
+  isLogged(state) {
+    return state.token !== ''
   },
-  getToken(state: IStoreState) {
+  getToken(state) {
     return state.token
   },
-  getSidebarMenuItems(state: IStoreState) {
+  getSidebarMenuItems(state) {
     return state.menu.sidebar.items
-  }
+  },
 }
 
 export const mutations = {
-  setToken(state: IStoreState, token: String) {
+  setToken(state, token) {
     state.token = token
     state.menu.sidebar.items[3] = new MenuItem('Выход', 'key.svg', '/logout')
   },
-  deleteToken(state: IStoreState) {
-    state.token = ""
+  deleteToken(state) {
+    state.token = ''
     state.menu.sidebar.items[3] = new MenuItem('Вход', 'key.svg', '/login')
-  }
+  },
 }
 
 export const actions = {
-  login(context, token: String) {
+  login(context, token) {
     Vue.$storage.set('token', token, { ttl: 86400000 })
     context.commit('setToken', token)
   },
@@ -54,5 +54,5 @@ export const actions = {
     } else {
       context.commit('setToken', token)
     }
-  }
+  },
 }

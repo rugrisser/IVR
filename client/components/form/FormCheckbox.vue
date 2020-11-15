@@ -7,9 +7,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  export default Vue.extend({
+<script>
+  export default {
     name: 'FormCheckbox',
     props: {
       id: {
@@ -27,15 +26,15 @@
     },
     computed: {
       model: {
-        get(): Array {
+        get() {
           return this.value
         },
-        set(val): void {
+        set(val) {
           this.$emit('input', val)
         },
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss" scoped>

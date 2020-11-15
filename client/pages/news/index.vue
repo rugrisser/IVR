@@ -30,14 +30,13 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import ArticleCard from '~/components/ArcticleCard.vue'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -65,7 +64,7 @@
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -79,7 +78,7 @@
     methods: {
       ...mapActions(['updateToken']),
     },
-  })
+  }
 </script>
 
 <style lang="scss">
