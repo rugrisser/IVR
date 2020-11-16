@@ -46,7 +46,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://api.lycsovet.ru/',
+    baseURL: 'https://api.lycsovet.ru/',
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
