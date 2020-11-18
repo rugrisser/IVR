@@ -82,9 +82,6 @@
 </script>
 
 <style lang="scss">
-  body {
-    background-color: white !important;
-  }
   .news-feed {
     padding-left: 48px;
     .news-feed-head {

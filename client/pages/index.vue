@@ -72,9 +72,10 @@
 </script>
 
 <style lang="scss">
-  body {
+  .home {
     overflow-x: hidden;
-    background-color: $primary-color !important;
+    background-color: $primary-color;
+    min-height: 100vh;
   }
   .info-block {
     margin-top: 48px;
