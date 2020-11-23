@@ -53,6 +53,7 @@
     overflow: hidden;
     transition: ease-out 300ms;
     overflow: hidden;
+    z-index: 2000;
     .panel-menu-content {
       width: $full-width;
       .panel-menu-head {

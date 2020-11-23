@@ -11,6 +11,7 @@ interface AppealStatusCrudRepository : CrudRepository<AppealStatus, Long> {
     fun findAllByMilestoneGreaterThanEqual(milestone: Long) : Collection<AppealStatus>
 }
 interface UserCrudRepository : CrudRepository<User, Long> {
+    override fun findAll() : List<User>
     fun findByLogin(login: String) : Optional<User>
 }
 interface NewsCrudRepository : CrudRepository<Article, Long> {

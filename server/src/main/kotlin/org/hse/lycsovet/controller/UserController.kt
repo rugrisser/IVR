@@ -21,6 +21,13 @@ class UserController(
         return ResponseEntity.ok(userService.getUser(token))
     }
 
+    @GetMapping("/all")
+    fun all(
+            @RequestHeader("Authorization") token: String
+    ) : ResponseEntity<List<User>> {
+        return ResponseEntity.ok(userService.getAll(token))
+    }
+
     @GetMapping("/{id}")
     fun get(
             @PathVariable id: Long,

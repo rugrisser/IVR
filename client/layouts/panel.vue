@@ -1,6 +1,11 @@
 <template>
   <div>
-    <PanelMenu :items="panelMenuItems" />
+    <PanelMenu
+      :items="panelMenuItems"
+      @mouseenter.native="shutter = true"
+      @mouseleave.native="shutter = false"
+    />
+    <div v-if="shutter" class="shutter"></div>
     <Nuxt />
   </div>
 </template>
@@ -17,6 +22,7 @@
     data() {
       return {
         panelMenuItems: [],
+        shutter: false,
       }
     },
     computed: {
@@ -29,7 +35,19 @@
         generatePanelMenu(this, this.getToken)
           .then((response) => {
             if (response.length > 1) {
+              let result = false
+              const path = this.$route.path
               this.panelMenuItems = response
+
+              this.panelMenuItems.forEach((item) => {
+                if (item.link === path) {
+                  result = true
+                }
+              })
+
+              if (!result) {
+                this.$router.push('/panel')
+              }
             } else {
               this.$router.push('/news')
             }
@@ -46,3 +64,13 @@
     },
   }
 </script>
+
+<style lang="scss">
+  .shutter {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba($color: #000000, $alpha: 0.25);
+    z-index: 1000;
+  }
+</style>

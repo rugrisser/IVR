@@ -8,6 +8,16 @@ body {
 .default-container {
   padding: 72px;
 }
+.panel-default-container {
+  padding: 72px;
+  padding-top: 96px;
+  padding-left: calc(72px + 96px);
+  h1 {
+    font-size: 64px;
+    font-weight: 600;
+    font-family: 'Jost';
+  }
+}
 
 .sidebar {
   max-width: $max-sidebar-menu-width;

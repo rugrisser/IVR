@@ -30,6 +30,7 @@ interface UserService {
     fun setRole(token: String, roleName: String, id: Long)
     fun getUser(token: String) : User
     fun getUser(token: String, id: Long) : User
+    fun getAll(token: String) : List<User>
 }
 interface PollService {
     fun get(id: String): Poll

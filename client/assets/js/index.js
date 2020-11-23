@@ -38,11 +38,11 @@ export async function generatePanelMenu({ $axios }, token) {
       ]
       break
     case 'deputy':
-      result = [new MenuItem('Обращения', 'speaker.svg', '/appeals')]
+      result = [new MenuItem('Обращения', 'speaker.svg', '/panel/appeals')]
       break
     case 'chairman':
       result = [
-        new MenuItem('Обращения', 'speaker.svg', '/appeals'),
+        new MenuItem('Обращения', 'speaker.svg', '/panel/appeals'),
         new MenuItem('Пользователи', 'teamwork.svg', '/panel/users'),
       ]
       break

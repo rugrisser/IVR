@@ -172,6 +172,15 @@ class UserServiceImpl(
         throw ForbiddenException("Token is invalid")
     }
 
+    override fun getAll(token: String): List<User> {
+        if (validate(token)) {
+            if (!checkRoleLevel(token, 3, 4)) throw ForbiddenException("You cannot watch all users list")
+            return userCrudRepository.findAll()
+        }
+
+        throw ForbiddenException("Token is invalid")
+    }
+
     fun checkRoleLevel(token: String, start: Int, end: Int): Boolean {
         if (validate(token)) {
             val token = removeTokenPrefix(token)
