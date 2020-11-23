@@ -28,6 +28,7 @@ interface RoleCrudRepository : CrudRepository<Role, Long> {
 }
 interface TicketCrudRepository : CrudRepository<Ticket, Long> {
     override fun findAll() : List<Ticket>
+    fun findAllByUser(user: User) : List<Ticket>
 }
 interface PollCrudRepository : CrudRepository<Poll, String> {
     fun findAllByAppealID(appealID: Long) : List<Poll>

@@ -10,7 +10,22 @@ class SupportServiceImpl(
         private val ticketCrudRepository: TicketCrudRepository
 ) : SupportService {
     override fun get(token: String): List<Ticket> {
-        return ticketCrudRepository.findAll()
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 4, 4)) throw ForbiddenException("You cannot get your ticket list")
+            val user = userService.getUser(token)
+            return ticketCrudRepository.findAllByUser(user)
+        }
+
+        throw ForbiddenException("Token is invalid")
+    }
+
+    override fun all(token: String): List<Ticket> {
+        if (userService.validate(token)) {
+            if (!userService.checkRoleLevel(token, 4, 4)) throw ForbiddenException("You cannot get all ticket list")
+            return ticketCrudRepository.findAll()
+        }
+
+        throw ForbiddenException("Token is invalid")
     }
 
     override fun create(token: String, ticketDTO: TicketDTO) : Long? {
