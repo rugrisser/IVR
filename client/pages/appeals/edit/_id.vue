@@ -51,10 +51,10 @@
           />
           <span class="step-name">Обратная связь</span>
           <div class="feedback">
-            <FormCheckbox id="email" val="email" v-model="form.feedback">
+            <FormCheckbox id="email" v-model="form.feedback" val="email">
               E-Mail
             </FormCheckbox>
-            <FormCheckbox id="vk" val="vk" v-model="form.feedback"
+            <FormCheckbox id="vk" v-model="form.feedback" val="vk"
               >ВК</FormCheckbox
             >
           </div>
@@ -159,8 +159,7 @@
               this.form.feedback.push('email')
             }
           })
-          .catch((error) => {
-            console.log(error)
+          .catch(() => {
             this.$router.push('/appeals')
           })
       }

@@ -12,8 +12,8 @@
         <div class="heading">
           <h1>{{ article.title }}</h1>
           <img
-            src="/img/ui/pen.svg"
             v-if="admin"
+            src="/img/ui/pen.svg"
             @click="$router.push('/news/edit/' + articleID)"
           />
         </div>

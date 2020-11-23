@@ -17,8 +17,8 @@
             </div>
             <div
               v-if="ownAppealsLen >= 0"
-              @click="ownView = !ownView"
               :class="{ selected: ownView }"
+              @click="ownView = !ownView"
             >
               <span>Ваши обращения: {{ ownAppealsLen }}</span>
             </div>
@@ -27,8 +27,8 @@
         <div class="row">
           <AppealCard
             v-for="appeal in appeals"
-            :key="appeal.id"
             :id="appeal.id"
+            :key="appeal.id"
             :text="appeal.title"
             :type="appeal.type.name"
             date="Сегодня"
