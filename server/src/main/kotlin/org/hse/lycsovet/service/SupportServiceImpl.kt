@@ -11,7 +11,7 @@ class SupportServiceImpl(
 ) : SupportService {
     override fun get(token: String): List<Ticket> {
         if (userService.validate(token)) {
-            if (!userService.checkRoleLevel(token, 4, 4)) throw ForbiddenException("You cannot get your ticket list")
+            if (userService.checkRoleLevel(token, 4, 4)) throw ForbiddenException("You cannot get your ticket list")
             val user = userService.getUser(token)
             return ticketCrudRepository.findAllByUser(user)
         }

@@ -30,7 +30,7 @@
       }
     },
     computed: {
-      ...mapGetters(['getToken', 'isLogged']),
+      ...mapGetters(['getToken']),
     },
     mounted() {
       this.$store.dispatch('updateToken')

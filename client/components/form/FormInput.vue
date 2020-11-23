@@ -1,5 +1,5 @@
 <template>
-  <div class="form-input">
+  <div class="form-input" :style="`width: ${width}%`">
     <span>{{ placeholder }}</span>
     <div class="form-input-tag" :class="{ focused: focused }">
       <input
@@ -50,6 +50,11 @@
         required: false,
         default: 4,
       },
+      width: {
+        type: Number,
+        required: false,
+        default: 70,
+      },
     },
     data() {
       return {
@@ -67,7 +72,6 @@
 
 <style lang="scss">
   .form-input {
-    width: 70%;
     display: block;
     margin-bottom: 16px;
     span {
