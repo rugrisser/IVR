@@ -114,7 +114,7 @@
           green: false,
         }
 
-        switch (this.appealStatus) {
+        switch (this.status) {
           case 'reviewed':
             result.green = true
             break
@@ -133,7 +133,7 @@
       appealStatusText() {
         let result
 
-        switch (this.appealStatus) {
+        switch (this.status) {
           case 'moderation':
             result = 'На модерации'
             break

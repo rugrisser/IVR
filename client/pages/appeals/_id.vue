@@ -12,7 +12,7 @@
         <div class="appeal-head">
           <h1>{{ appeal.title }}</h1>
           <img
-            v-if="appealStatus == 'moderation'"
+            v-if="appeal.status.name === 'moderation'"
             src="/img/ui/pen.svg"
             @click="$router.push('/appeals/edit/' + id)"
           />
@@ -72,7 +72,7 @@
       appealTypeText() {
         let result = ''
 
-        switch (this.type) {
+        switch (this.appeal.type.name) {
           case 'proposal':
             result = 'Предложение'
             break
@@ -89,7 +89,7 @@
       appealTypeIconLink() {
         let result = this.iconPathAlias
 
-        switch (this.type) {
+        switch (this.appeal.type.name) {
           case 'complaint':
             result += 'cross.svg'
             break
@@ -103,7 +103,7 @@
       appealStatusIconLink() {
         let result = this.flagIconPathAlias
 
-        switch (this.status) {
+        switch (this.appeal.status.name) {
           case 'reviewed':
             result += 'green.svg'
             break
@@ -127,7 +127,7 @@
           green: false,
         }
 
-        switch (this.appealStatus) {
+        switch (this.appeal.status.name) {
           case 'reviewed':
             result.green = true
             break
@@ -146,7 +146,7 @@
       appealStatusText() {
         let result
 
-        switch (this.appealStatus) {
+        switch (this.appeal.status.name) {
           case 'moderation':
             result = 'На модерации'
             break
