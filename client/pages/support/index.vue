@@ -33,6 +33,7 @@
   import Logo from '~/components/logo/Logo.vue'
   import Ticket from '~/components/Ticket.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -43,17 +44,20 @@
     data() {
       return {
         tickets: [],
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
 
       if (this.logged) {
         this.$axios

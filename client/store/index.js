@@ -1,18 +1,7 @@
 import Vue from 'vue'
-import { MenuItem } from '~/assets/js'
 
 export const state = () => ({
   token: '',
-  menu: {
-    sidebar: {
-      items: [
-        new MenuItem('Новости', 'news.svg', '/news'),
-        new MenuItem('Обращения', 'speaker.svg', '/appeals'),
-        new MenuItem('Техподдержка', 'siren.svg', '/support'),
-        new MenuItem('Вход', 'key.svg', '/login'),
-      ],
-    },
-  },
 })
 
 export const getters = {
@@ -22,19 +11,14 @@ export const getters = {
   getToken(state) {
     return state.token
   },
-  getSidebarMenuItems(state) {
-    return state.menu.sidebar.items
-  },
 }
 
 export const mutations = {
   setToken(state, token) {
     state.token = token
-    state.menu.sidebar.items[3] = new MenuItem('Выход', 'key.svg', '/logout')
   },
   deleteToken(state) {
     state.token = ''
-    state.menu.sidebar.items[3] = new MenuItem('Вход', 'key.svg', '/login')
   },
 }
 

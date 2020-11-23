@@ -51,5 +51,29 @@ export async function generatePanelMenu({ $axios }, token) {
   }
 
   result.push(new MenuItem('Выйти из ПУ', 'return.svg', '/news'))
+  result.push(new MenuItem('Выйти', 'key.svg', '/logout'))
+  return result
+}
+
+export async function generateMainMenu({ $axios }, token) {
+  const result = [
+    new MenuItem('Новости', 'news.svg', '/news'),
+    new MenuItem('Обращения', 'speaker.svg', '/appeals'),
+  ]
+
+  if (token == null || token === '') {
+    result.push(new MenuItem('Вход', 'key.svg', '/login'))
+  } else {
+    const role = await getRole({ $axios }, token)
+
+    if (role !== 'admin') {
+      result.push(new MenuItem('Техподдержка', 'siren.svg', '/support'))
+    }
+    if (role !== 'user') {
+      result.push(new MenuItem('Войти в ПУ', 'panel.svg', '/panel'))
+    }
+    result.push(new MenuItem('Выход', 'key.svg', '/logout'))
+  }
+
   return result
 }

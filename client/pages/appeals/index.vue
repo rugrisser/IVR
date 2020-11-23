@@ -46,6 +46,7 @@
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import AppealCard from '~/components/AppealCard.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -55,6 +56,7 @@
     },
     data() {
       return {
+        menuItems: [],
         allAppeals: [],
         ownAppeals: [],
         ownView: false,
@@ -63,7 +65,6 @@
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
@@ -78,6 +79,9 @@
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
       this.$axios.$get('/appeal').then((response) => {
         this.allAppeals = response
       })

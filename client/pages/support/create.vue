@@ -34,6 +34,7 @@
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import FormInput from '~/components/form/FormInput.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -45,17 +46,20 @@
     data() {
       return {
         text: '',
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
 
       if (this.logged) {
         this.$axios

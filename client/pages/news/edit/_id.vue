@@ -50,6 +50,7 @@
   import FormInput from '~/components/form/FormInput.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
   import SecondaryButton from '~/components/button/SecondaryButton.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -68,17 +69,20 @@
           description: '',
           text: '',
         },
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
 
       if (!this.logged) {
         this.$router.push('/news')

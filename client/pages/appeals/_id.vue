@@ -36,9 +36,10 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -58,14 +59,13 @@
             name: '',
           },
         },
+        menuItems: [],
         appealAlias: '/appeals/',
         iconPathAlias: '/img/ui/',
       }
     },
     computed: {
-      ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
-      }),
+      ...mapGetters(['getToken']),
       flagIconPathAlias() {
         return this.iconPathAlias + 'flag/'
       },
@@ -170,6 +170,11 @@
     mounted() {
       const id = parseInt(this.$route.params.id)
 
+      this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.getToken).then(
+        (result) => (this.menuItems = result),
+      )
+
       if (isNaN(id)) {
         this.$router.push('/appeals')
       } else {
@@ -177,13 +182,15 @@
         this.$axios
           .$get('/appeal/' + id)
           .then((response) => {
-            console.log(response)
             this.appeal = response
           })
           .catch(() => {
             this.$router.push('/appeals')
           })
       }
+    },
+    methods: {
+      ...mapActions(['updateToken']),
     },
   }
 </script>

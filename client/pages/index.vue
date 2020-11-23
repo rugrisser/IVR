@@ -38,9 +38,10 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo'
   import MainMenu from '~/components/menu/main/MainMenu'
-  import { MenuItem } from '~/assets/js'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -49,16 +50,21 @@
     },
     data() {
       return {
-        menuItems: [
-          new MenuItem('Новости', 'news.svg', '/news'),
-          new MenuItem('Обращения', 'speaker.svg', '/appeals'),
-          new MenuItem('Техподдержка', 'siren.svg', '/support'),
-          new MenuItem('Вход', 'key.svg', '/login'),
-        ],
+        menuItems: [],
         menuOpened: false,
       }
     },
+    computed: {
+      ...mapGetters(['getToken']),
+    },
+    mounted() {
+      this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.getToken).then(
+        (result) => (this.menuItems = result),
+      )
+    },
     methods: {
+      ...mapActions(['updateToken']),
       openMenu() {
         this.menuOpened = true
       },

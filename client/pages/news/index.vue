@@ -35,6 +35,7 @@
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import ArticleCard from '~/components/ArcticleCard.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -46,17 +47,20 @@
       return {
         articles: [],
         admin: false,
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
       this.$axios.$get('/news').then((response) => {
         this.articles = response.reverse()
       })

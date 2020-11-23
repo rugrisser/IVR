@@ -36,6 +36,7 @@
   import { mapGetters } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -50,11 +51,11 @@
           text: '',
         },
         admin: false,
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
@@ -81,6 +82,9 @@
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
       if (this.logged) {
         this.$axios
           .$get('/user/getRole', {

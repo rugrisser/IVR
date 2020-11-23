@@ -83,6 +83,7 @@
   import FormCheckbox from '~/components/form/FormCheckbox.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
   import SecondaryButton from '~/components/button/SecondaryButton.vue'
+  import { generateMainMenu } from '~/assets/js'
 
   export default {
     components: {
@@ -103,17 +104,20 @@
           feedback: [],
         },
         type: 'proposal',
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
       const id = parseInt(this.$route.params.id)
 
       if (this.logged) {
