@@ -15,7 +15,11 @@
               <img src="/img/ui/plus.svg" />
               <span>Создать обращение</span>
             </div>
-            <div v-if="ownAppealsLen >= 0" @click="ownView = !ownView" :class="{ selected: ownView }">
+            <div
+              v-if="ownAppealsLen >= 0"
+              :class="{ selected: ownView }"
+              @click="ownView = !ownView"
+            >
               <span>Ваши обращения: {{ ownAppealsLen }}</span>
             </div>
           </div>
@@ -23,26 +27,28 @@
         <div class="row">
           <AppealCard
             v-for="appeal in appeals"
-            :key="appeal.id"
             :id="appeal.id"
+            :key="appeal.id"
             :text="appeal.title"
             :type="appeal.type.name"
             date="Сегодня"
-            :status="appeal.status.name" />
+            :status="appeal.status.name"
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
+  /* eslint-disable vue/no-side-effects-in-computed-properties */
   import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import AppealCard from '~/components/AppealCard.vue'
+  import { generateMainMenu } from '~/assets/js'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -50,6 +56,7 @@
     },
     data() {
       return {
+        menuItems: [],
         allAppeals: [],
         ownAppeals: [],
         ownView: false,
@@ -58,37 +65,40 @@
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
-      appeals(): Array<?> {
-        return this.ownView ? this.ownAppeals.reverse() : this.allAppeals.reverse()
+      appeals() {
+        return this.ownView
+          ? this.ownAppeals.reverse()
+          : this.allAppeals.reverse()
       },
-      ownAppealsLen(): Number {
+      ownAppealsLen() {
         return this.ownAppeals.length
-      }
-    },
-    methods: {
-      ...mapActions(['updateToken']),
+      },
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
       this.$axios.$get('/appeal').then((response) => {
         this.allAppeals = response
       })
-      this.$axios.$get('/appeal/own', {
-        headers: {
-          'Authorization': 'Bearer ' + this.token,
-        },
-      }).then((response) => {
-        this.ownAppeals = response
-      })
+      this.$axios
+        .$get('/appeal/own', {
+          headers: {
+            Authorization: 'Bearer ' + this.token,
+          },
+        })
+        .then((response) => {
+          this.ownAppeals = response
+        })
       if (this.logged) {
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -98,12 +108,15 @@
               this.user = false
             }
           })
-          .catch(() => this.user = false)
+          .catch(() => (this.user = false))
       } else {
         this.user = false
       }
     },
-  })
+    methods: {
+      ...mapActions(['updateToken']),
+    },
+  }
 </script>
 
 <style lang="scss">

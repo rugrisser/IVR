@@ -12,8 +12,8 @@
         <div class="heading">
           <h1>{{ article.title }}</h1>
           <img
-            src="/img/ui/pen.svg"
             v-if="admin"
+            src="/img/ui/pen.svg"
             @click="$router.push('/news/edit/' + articleID)"
           />
         </div>
@@ -32,13 +32,13 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
+  import { generateMainMenu } from '~/assets/js'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -51,11 +51,11 @@
           text: '',
         },
         admin: false,
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
@@ -82,11 +82,14 @@
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
       if (this.logged) {
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -114,7 +117,7 @@
           })
       }
     },
-  })
+  }
 </script>
 
 <style lang="scss">

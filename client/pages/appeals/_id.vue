@@ -12,7 +12,7 @@
         <div class="appeal-head">
           <h1>{{ appeal.title }}</h1>
           <img
-            v-if="appealStatus == AppealStatus.Moderation"
+            v-if="appeal.status.name === 'moderation'"
             src="/img/ui/pen.svg"
             @click="$router.push('/appeals/edit/' + id)"
           />
@@ -35,14 +35,13 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  import { mapGetters } from 'vuex'
+<script>
+  import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
-  import * as Appeal from '~/assets/ts/appeal'
+  import { generateMainMenu } from '~/assets/js'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -60,43 +59,24 @@
             name: '',
           },
         },
+        menuItems: [],
         appealAlias: '/appeals/',
         iconPathAlias: '/img/ui/',
-        AppealStatus: Appeal.AppealStatus,
       }
     },
     computed: {
-      ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
-      }),
-      flagIconPathAlias(): string {
+      ...mapGetters(['getToken']),
+      flagIconPathAlias() {
         return this.iconPathAlias + 'flag/'
       },
-      appealType(): Appeal.AppealType {
-        let result: Appeal.AppealType
+      appealTypeText() {
+        let result = ''
 
         switch (this.appeal.type.name) {
           case 'proposal':
-            result = Appeal.AppealType.Proposal
-            break
-          case 'complaint':
-            result = Appeal.AppealType.Complaint
-            break
-          default:
-            result = Appeal.AppealType.Other
-            break
-        }
-
-        return result
-      },
-      appealTypeText(): string {
-        let result = ''
-
-        switch (this.appealType) {
-          case Appeal.AppealType.Proposal:
             result = 'Предложение'
             break
-          case Appeal.AppealType.Complaint:
+          case 'complaint':
             result = 'Жалоба'
             break
           default:
@@ -106,11 +86,11 @@
 
         return result
       },
-      appealTypeIconLink(): string {
+      appealTypeIconLink() {
         let result = this.iconPathAlias
 
-        switch (this.appealType) {
-          case Appeal.AppealType.Complaint:
+        switch (this.appeal.type.name) {
+          case 'complaint':
             result += 'cross.svg'
             break
           default:
@@ -120,40 +100,17 @@
 
         return result
       },
-      appealStatus(): Appeal.AppealStatus {
-        let result: Appeal.AppealStatus
-
-        switch (this.appeal.status.name) {
-          case 'moderation':
-            result = Appeal.AppealStatus.Moderation
-            break
-          case 'consideration':
-            result = Appeal.AppealStatus.Consideration
-            break
-          case 'reviewed':
-            result = Appeal.AppealStatus.Reviewed
-            break
-          case 'rejected':
-            result = Appeal.AppealStatus.Rejected
-            break
-          default:
-            result = Appeal.AppealStatus.Unknown
-            break
-        }
-
-        return result
-      },
-      appealStatusIconLink(): string {
+      appealStatusIconLink() {
         let result = this.flagIconPathAlias
 
-        switch (this.appealStatus) {
-          case Appeal.AppealStatus.Reviewed:
+        switch (this.appeal.status.name) {
+          case 'reviewed':
             result += 'green.svg'
             break
-          case Appeal.AppealStatus.Rejected:
+          case 'rejected':
             result += 'red.svg'
             break
-          case Appeal.AppealStatus.Consideration:
+          case 'consideration':
             result += 'orange.svg'
             break
           default:
@@ -163,21 +120,21 @@
 
         return result
       },
-      appealStatusClassObject(): Object {
+      appealStatusClassObject() {
         const result = {
           red: false,
           orange: false,
           green: false,
         }
 
-        switch (this.appealStatus) {
-          case Appeal.AppealStatus.Reviewed:
+        switch (this.appeal.status.name) {
+          case 'reviewed':
             result.green = true
             break
-          case Appeal.AppealStatus.Rejected:
+          case 'rejected':
             result.red = true
             break
-          case Appeal.AppealStatus.Consideration:
+          case 'consideration':
             result.orange = true
             break
           default:
@@ -186,20 +143,20 @@
 
         return result
       },
-      appealStatusText(): string {
-        let result: string
+      appealStatusText() {
+        let result
 
-        switch (this.appealStatus) {
-          case Appeal.AppealStatus.Moderation:
+        switch (this.appeal.status.name) {
+          case 'moderation':
             result = 'На модерации'
             break
-          case Appeal.AppealStatus.Consideration:
+          case 'consideration':
             result = 'На рассмотрении'
             break
-          case Appeal.AppealStatus.Reviewed:
+          case 'reviewed':
             result = 'Рассмотрено'
             break
-          case Appeal.AppealStatus.Rejected:
+          case 'rejected':
             result = 'Отклонено'
             break
           default:
@@ -213,6 +170,11 @@
     mounted() {
       const id = parseInt(this.$route.params.id)
 
+      this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.getToken).then(
+        (result) => (this.menuItems = result),
+      )
+
       if (isNaN(id)) {
         this.$router.push('/appeals')
       } else {
@@ -220,7 +182,6 @@
         this.$axios
           .$get('/appeal/' + id)
           .then((response) => {
-            console.log(response)
             this.appeal = response
           })
           .catch(() => {
@@ -228,7 +189,10 @@
           })
       }
     },
-  })
+    methods: {
+      ...mapActions(['updateToken']),
+    },
+  }
 </script>
 
 <style lang="scss">

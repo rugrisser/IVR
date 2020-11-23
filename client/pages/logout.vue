@@ -2,19 +2,17 @@
   <div class="logout"></div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapActions } from 'vuex'
-
-  export default Vue.extend({
-    methods: {
-      ...mapActions(['logout']),
-    },
+  export default {
     mounted() {
       this.$store.dispatch('logout')
       this.$router.push('/login')
     },
-  })
+    methods: {
+      ...mapActions(['logout']),
+    },
+  }
 </script>
 
 <style lang="scss"></style>

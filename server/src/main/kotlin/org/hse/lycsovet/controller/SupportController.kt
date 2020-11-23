@@ -20,6 +20,13 @@ class SupportController(
         return ResponseEntity.ok(supportService.get(token))
     }
 
+    @GetMapping("/all")
+    fun all(
+            @RequestHeader("Authorization") token: String
+    ) : ResponseEntity<List<Ticket>> {
+        return ResponseEntity.ok(supportService.all(token))
+    }
+
     @PostMapping
     fun create(
             @RequestHeader("Authorization") token: String,

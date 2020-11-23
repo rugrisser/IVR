@@ -6,7 +6,9 @@
         Введите свои данные от профиля
         <a target="_blank" href="https://hselyceum.eljur.ru">ЭлЖур</a>
       </p>
-      <div v-if="error" class="login-form-error">Неправильный логин или пароль</div>
+      <div v-if="error" class="login-form-error">
+        Неправильный логин или пароль
+      </div>
       <div class="login-form-input">
         <FormInput v-model="login" style="width: 100%" placeholder="Логин" />
         <FormInput
@@ -26,13 +28,12 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapActions } from 'vuex'
   import FormInput from '~/components/form/FormInput.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
 
-  export default Vue.extend({
+  export default {
     components: {
       FormInput,
       PrimaryButton,
@@ -61,7 +62,7 @@
           })
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss">

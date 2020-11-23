@@ -1,5 +1,5 @@
 <template>
-  <div class="form-input">
+  <div class="form-input" :style="`width: ${width}%`">
     <span>{{ placeholder }}</span>
     <div class="form-input-tag" :class="{ focused: focused }">
       <input
@@ -23,10 +23,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-
-  export default Vue.extend({
+<script>
+  export default {
     name: 'FormInput',
     props: {
       placeholder: {
@@ -52,6 +50,11 @@
         required: false,
         default: 4,
       },
+      width: {
+        type: Number,
+        required: false,
+        default: 70,
+      },
     },
     data() {
       return {
@@ -63,13 +66,12 @@
       if (this.password) {
         this.visible = false
       }
-    }
-  })
+    },
+  }
 </script>
 
 <style lang="scss">
   .form-input {
-    width: 70%;
     display: block;
     margin-bottom: 16px;
     span {

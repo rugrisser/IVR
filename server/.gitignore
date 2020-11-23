@@ -32,5 +32,5 @@ build/
 
 ### Logs ###
 
-auth.log
+*.log
 *.gz

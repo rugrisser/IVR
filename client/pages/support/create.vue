@@ -28,15 +28,15 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import FormInput from '~/components/form/FormInput.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
+  import { generateMainMenu } from '~/assets/js'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -46,43 +46,26 @@
     data() {
       return {
         text: '',
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
-    methods: {
-      ...mapActions(['updateToken']),
-      submit() {
-        this.$axios
-          .$post(
-            '/support',
-            { text: this.text },
-            {
-              headers: {
-                'Authorization': 'Bearer ' + this.token,
-              },
-            })
-          .then(() => {
-            this.$router.push('/support')
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      },
-    },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
 
       if (this.logged) {
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -95,7 +78,28 @@
         this.$router.push('/login')
       }
     },
-  })
+    methods: {
+      ...mapActions(['updateToken']),
+      submit() {
+        this.$axios
+          .$post(
+            '/support',
+            { text: this.text },
+            {
+              headers: {
+                Authorization: 'Bearer ' + this.token,
+              },
+            },
+          )
+          .then(() => {
+            this.$router.push('/support')
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      },
+    },
+  }
 </script>
 
 <style lang="scss">

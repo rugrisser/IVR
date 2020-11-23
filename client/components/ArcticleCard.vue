@@ -9,10 +9,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-
-  export default Vue.extend({
+<script>
+  export default {
     name: 'ArticleCard',
     props: {
       id: {
@@ -38,16 +36,16 @@
       }
     },
     computed: {
-      link(): string {
+      link() {
         return this.articleAlias + this.id
       },
     },
     methods: {
-      go(): void {
+      go() {
         this.$router.push(this.link)
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss">

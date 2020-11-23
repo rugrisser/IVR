@@ -43,16 +43,16 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
+<script>
   import { mapGetters, mapActions } from 'vuex'
   import Logo from '~/components/logo/Logo.vue'
   import SidebarMenu from '~/components/menu/sidebar/SidebarMenu.vue'
   import FormInput from '~/components/form/FormInput.vue'
   import PrimaryButton from '~/components/button/PrimaryButton.vue'
   import SecondaryButton from '~/components/button/SecondaryButton.vue'
+  import { generateMainMenu } from '~/assets/js'
 
-  export default Vue.extend({
+  export default {
     components: {
       Logo,
       SidebarMenu,
@@ -69,17 +69,20 @@
           description: '',
           text: '',
         },
+        menuItems: [],
       }
     },
     computed: {
       ...mapGetters({
-        menuItems: 'getSidebarMenuItems',
         logged: 'isLogged',
         token: 'getToken',
       }),
     },
     mounted() {
       this.$store.dispatch('updateToken')
+      generateMainMenu(this, this.token).then(
+        (result) => (this.menuItems = result),
+      )
 
       if (!this.logged) {
         this.$router.push('/news')
@@ -89,7 +92,7 @@
         this.$axios
           .$get('/user/getRole', {
             headers: {
-              'Authorization': 'Bearer ' + this.token,
+              Authorization: 'Bearer ' + this.token,
             },
           })
           .then((response) => {
@@ -121,7 +124,7 @@
     },
     methods: {
       ...mapActions(['updateToken']),
-      submit(publish: Boolean) {
+      submit(publish) {
         if (this.isEdit) {
           const body = {
             id: this.id,
@@ -134,7 +137,7 @@
           this.$axios
             .$put('/news/', body, {
               headers: {
-                'Authorization': 'Bearer ' + this.token,
+                Authorization: 'Bearer ' + this.token,
               },
             })
             .then(() => {
@@ -154,7 +157,7 @@
           this.$axios
             .$post('/news', body, {
               headers: {
-                'Authorization': 'Bearer ' + this.token,
+                Authorization: 'Bearer ' + this.token,
               },
             })
             .then((response) => {
@@ -166,7 +169,7 @@
         }
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss">

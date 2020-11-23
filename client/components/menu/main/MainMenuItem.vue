@@ -5,9 +5,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  export default Vue.extend({
+<script>
+  export default {
     name: 'MainMenuItem',
     props: {
       text: {
@@ -29,7 +28,7 @@
       }
     },
     computed: {
-      iconLink(): string {
+      iconLink() {
         return this.iconLinkAlias + this.icon
       },
     },
@@ -38,7 +37,7 @@
         this.$router.push(this.link)
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss" scoped>

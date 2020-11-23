@@ -19,7 +19,8 @@ interface NewsService {
     fun delete(token: String, id: Long)
 }
 interface SupportService {
-    fun get(token: String): List<Ticket>
+    fun get(token: String) : List<Ticket>
+    fun all(token: String) : List<Ticket>
     fun create(token: String, ticketDTO: TicketDTO) : Long?
     fun close(token: String, id: Long, message: String)
 }
@@ -30,6 +31,7 @@ interface UserService {
     fun setRole(token: String, roleName: String, id: Long)
     fun getUser(token: String) : User
     fun getUser(token: String, id: Long) : User
+    fun getAll(token: String) : List<User>
 }
 interface PollService {
     fun get(id: String): Poll

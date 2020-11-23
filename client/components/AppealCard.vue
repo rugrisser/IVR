@@ -18,11 +18,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import Vue from 'vue'
-  import * as Appeal from '~/assets/ts/appeal'
-
-  export default Vue.extend({
+<script>
+  export default {
     name: 'AppealCard',
     props: {
       id: {
@@ -50,41 +47,23 @@
       return {
         appealAlias: '/appeals/',
         iconPathAlias: '/img/ui/',
-        AppealStatus: Appeal.AppealStatus,
       }
     },
     computed: {
-      link(): string {
+      link() {
         return this.appealAlias + this.id
       },
-      flagIconPathAlias(): string {
+      flagIconPathAlias() {
         return this.iconPathAlias + 'flag/'
       },
-      appealType(): Appeal.AppealType {
-        let result: Appeal.AppealType
+      appealTypeText() {
+        let result = ''
 
         switch (this.type) {
           case 'proposal':
-            result = Appeal.AppealType.Proposal
-            break
-          case 'complaint':
-            result = Appeal.AppealType.Complaint
-            break
-          default:
-            result = Appeal.AppealType.Other
-            break
-        }
-
-        return result
-      },
-      appealTypeText(): string {
-        let result = ''
-
-        switch (this.appealType) {
-          case Appeal.AppealType.Proposal:
             result = 'Предложение'
             break
-          case Appeal.AppealType.Complaint:
+          case 'complaint':
             result = 'Жалоба'
             break
           default:
@@ -94,11 +73,11 @@
 
         return result
       },
-      appealTypeIconLink(): string {
+      appealTypeIconLink() {
         let result = this.iconPathAlias
 
-        switch (this.appealType) {
-          case Appeal.AppealType.Complaint:
+        switch (this.type) {
+          case 'complaint':
             result += 'cross.svg'
             break
           default:
@@ -108,40 +87,17 @@
 
         return result
       },
-      appealStatus(): Appeal.AppealStatus {
-        let result: Appeal.AppealStatus
-
-        switch (this.status) {
-          case 'moderation':
-            result = Appeal.AppealStatus.Moderation
-            break
-          case 'consideration':
-            result = Appeal.AppealStatus.Consideration
-            break
-          case 'reviewed':
-            result = Appeal.AppealStatus.Reviewed
-            break
-          case 'rejected':
-            result = Appeal.AppealStatus.Rejected
-            break
-          default:
-            result = Appeal.AppealStatus.Unknown
-            break
-        }
-
-        return result
-      },
-      appealStatusIconLink(): string {
+      appealStatusIconLink() {
         let result = this.flagIconPathAlias
 
-        switch (this.appealStatus) {
-          case Appeal.AppealStatus.Reviewed:
+        switch (this.status) {
+          case 'reviewed':
             result += 'green.svg'
             break
-          case Appeal.AppealStatus.Rejected:
+          case 'rejected':
             result += 'red.svg'
             break
-          case Appeal.AppealStatus.Consideration:
+          case 'consideration':
             result += 'orange.svg'
             break
           default:
@@ -151,21 +107,21 @@
 
         return result
       },
-      appealStatusClassObject(): Object {
+      appealStatusClassObject() {
         const result = {
           red: false,
           orange: false,
           green: false,
         }
 
-        switch (this.appealStatus) {
-          case Appeal.AppealStatus.Reviewed:
+        switch (this.status) {
+          case 'reviewed':
             result.green = true
             break
-          case Appeal.AppealStatus.Rejected:
+          case 'rejected':
             result.red = true
             break
-          case Appeal.AppealStatus.Consideration:
+          case 'consideration':
             result.orange = true
             break
           default:
@@ -174,20 +130,20 @@
 
         return result
       },
-      appealStatusText(): string {
-        let result: string
+      appealStatusText() {
+        let result
 
-        switch (this.appealStatus) {
-          case Appeal.AppealStatus.Moderation:
+        switch (this.status) {
+          case 'moderation':
             result = 'На модерации'
             break
-          case Appeal.AppealStatus.Consideration:
+          case 'consideration':
             result = 'На рассмотрении'
             break
-          case Appeal.AppealStatus.Reviewed:
+          case 'reviewed':
             result = 'Рассмотрено'
             break
-          case Appeal.AppealStatus.Rejected:
+          case 'rejected':
             result = 'Отклонено'
             break
           default:
@@ -199,11 +155,11 @@
       },
     },
     methods: {
-      go(): void {
+      go() {
         this.$router.push(this.link)
       },
     },
-  })
+  }
 </script>
 
 <style lang="scss">
