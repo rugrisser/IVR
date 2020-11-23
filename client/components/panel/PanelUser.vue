@@ -144,11 +144,8 @@
     display: flex;
     padding: 32px 48px;
     background-color: white;
-    // box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.15);
     border: 2px solid rgba(0, 0, 0, 0.25);
     border-width: 2px 2px 0 2px;
-    // border-radius: 24px;
-    // margin-top: 32px;
     transition: 250ms ease-out;
     .name {
       font-size: 28px;
@@ -189,9 +186,8 @@
       border-radius: 0 0 $border-radius $border-radius;
       border-width: 2px;
     }
-    /*&:hover {
+    &:hover {
       cursor: pointer;
-      box-shadow: 0px 0px 32px rgba(0, 0, 0, 0.25);
-    }*/
+    }
   }
 </style>
