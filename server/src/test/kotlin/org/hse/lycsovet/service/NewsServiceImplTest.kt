@@ -5,15 +5,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
 import kotlin.test.assertFailsWith
 
-@SpringBootTest
 internal class NewsServiceImplTest {
 
-    private val newsCrudRepository = mock(NewsCrudRepository::class.java)
     private val userService = mock(UserServiceImpl::class.java)
+    private val newsCrudRepository = mock(NewsCrudRepository::class.java)
     private val newsService = NewsServiceImpl(userService, newsCrudRepository)
 
     @Test
