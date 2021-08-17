@@ -1,13 +1,11 @@
 package org.hse.lycsovet.service
 
 import org.hse.lycsovet.*
-import org.junit.jupiter.api.Assertions.assertDoesNotThrow
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.*
 import java.util.*
-import kotlin.test.assertFailsWith
 
 internal class AppealServiceImplTest {
 
@@ -58,7 +56,7 @@ internal class AppealServiceImplTest {
         `when`(userService.validate(anyString())).thenReturn(true)
         `when`(userService.checkRoleLevel(anyString(), eq(1), eq(1))).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             appealService.create("", createAppealDTO())
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -68,7 +66,7 @@ internal class AppealServiceImplTest {
     fun createFailDueToWrongToken() {
         `when`(userService.validate(anyString())).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             appealService.create("", createAppealDTO())
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -110,7 +108,7 @@ internal class AppealServiceImplTest {
     fun editFailDueToWrongDTO() {
         `when`(userService.validate(anyString())).thenReturn(true)
 
-        assertFailsWith(BadRequestException::class) {
+        assertThrows(BadRequestException::class.java) {
             appealService.edit("", createAppealDTO())
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -121,7 +119,7 @@ internal class AppealServiceImplTest {
         `when`(userService.validate(anyString())).thenReturn(true)
         `when`(appealCrudRepository.findById(anyLong())).thenReturn(Optional.empty())
 
-        assertFailsWith(NotFoundException::class) {
+        assertThrows(NotFoundException::class.java) {
             appealService.edit("", createAppealDTO(id = 1))
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -138,7 +136,7 @@ internal class AppealServiceImplTest {
         `when`(appealTypeCrudRepository.findByName(anyString())).thenReturn(Optional.of(createAppealType()))
         `when`(userService.getUser(anyString())).thenReturn(createUser(id = 2))
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             appealService.edit("", createAppealDTO(id = 1))
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -148,7 +146,7 @@ internal class AppealServiceImplTest {
     fun editFailDueToWrongToken() {
         `when`(userService.validate(anyString())).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             appealService.edit("", createAppealDTO())
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -201,7 +199,7 @@ internal class AppealServiceImplTest {
         `when`(appealStatusCrudRepository.findByName(anyString())).thenReturn(Optional.of(appealStatus))
         `when`(appealCrudRepository.findById(anyLong())).thenReturn(Optional.of(appeal))
 
-        assertFailsWith(BadRequestException::class) {
+        assertThrows(BadRequestException::class.java) {
             appealService.changeStatus("", 1, "")
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -214,7 +212,7 @@ internal class AppealServiceImplTest {
         `when`(appealStatusCrudRepository.findByName(anyString())).thenReturn(Optional.of(createAppealStatus()))
         `when`(appealCrudRepository.findById(anyLong())).thenReturn(Optional.empty())
 
-        assertFailsWith(NotFoundException::class) {
+        assertThrows(NotFoundException::class.java) {
             appealService.changeStatus("", 1, "")
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -226,7 +224,7 @@ internal class AppealServiceImplTest {
         `when`(userService.checkRoleLevel(anyString(), eq(2), eq(3))).thenReturn(true)
         `when`(appealStatusCrudRepository.findByName(anyString())).thenReturn(Optional.empty())
 
-        assertFailsWith(BadRequestException::class) {
+        assertThrows(BadRequestException::class.java) {
             appealService.changeStatus("", 1, "")
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -237,7 +235,7 @@ internal class AppealServiceImplTest {
         `when`(userService.validate(anyString())).thenReturn(true)
         `when`(userService.checkRoleLevel(anyString(), eq(2), eq(3))).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             appealService.changeStatus("", 1, "")
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))
@@ -247,7 +245,7 @@ internal class AppealServiceImplTest {
     fun changeStatusFailDueToWrongToken() {
         `when`(userService.validate(anyString())).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             appealService.changeStatus("", 1, "")
         }
         verify(appealCrudRepository, times(0)).save(any(Appeal::class.java))

@@ -1,14 +1,11 @@
 package org.hse.lycsovet.service
 
 import org.hse.lycsovet.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 internal class NewsServiceImplTest {
 
@@ -34,7 +31,7 @@ internal class NewsServiceImplTest {
         }
 
         val articleCaptor = ArgumentCaptor.forClass(Article::class.java)
-        verify(newsCrudRepository).save(articleCaptor.capture())
+        verify(newsCrudRepository, times(1)).save(articleCaptor.capture())
         val capturedArticles = articleCaptor.allValues
         val article = capturedArticles[0]
 
@@ -42,7 +39,6 @@ internal class NewsServiceImplTest {
         assertEquals(dto.description, article.description)
         assertEquals(dto.text, article.text)
         assertEquals(dto.publish, article.published)
-        verify(newsCrudRepository, times(1)).save(any(Article::class.java))
     }
 
     @Test
@@ -57,7 +53,7 @@ internal class NewsServiceImplTest {
 
         `when`(userService.validate("")).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.publish("", dto)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -76,7 +72,7 @@ internal class NewsServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 2, 4)).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.publish("", dto)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -115,7 +111,7 @@ internal class NewsServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(newsCrudRepository.findById(1)).thenReturn(Optional.of(article))
 
-        assertFailsWith(BadRequestException::class) {
+        assertThrows(BadRequestException::class.java) {
             newsService.publish("", 1)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -126,7 +122,7 @@ internal class NewsServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(newsCrudRepository.findById(1)).thenReturn(Optional.empty())
 
-        assertFailsWith(NotFoundException::class) {
+        assertThrows(NotFoundException::class.java) {
             newsService.publish("", 1)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -136,7 +132,7 @@ internal class NewsServiceImplTest {
     fun publishFailDueToWrongToken() {
         `when`(userService.validate("")).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.publish("", 1)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -185,7 +181,7 @@ internal class NewsServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 2, 4)).thenReturn(true)
 
-        assertFailsWith(BadRequestException::class) {
+        assertThrows(BadRequestException::class.java) {
             newsService.edit("", dto)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -205,7 +201,7 @@ internal class NewsServiceImplTest {
         `when`(userService.checkRoleLevel("", 2, 4)).thenReturn(true)
         `when`(newsCrudRepository.findById(1)).thenReturn(Optional.empty())
 
-        assertFailsWith(NotFoundException::class) {
+        assertThrows(NotFoundException::class.java) {
             newsService.edit("", dto)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -223,7 +219,7 @@ internal class NewsServiceImplTest {
 
         `when`(userService.validate("")).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.edit("", dto)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -242,7 +238,7 @@ internal class NewsServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 2, 4)).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.edit("", dto)
         }
         verify(newsCrudRepository, times(0)).save(any(Article::class.java))
@@ -274,7 +270,7 @@ internal class NewsServiceImplTest {
         `when`(userService.checkRoleLevel("", 2, 4)).thenReturn(true)
         `when`(newsCrudRepository.findById(1)).thenReturn(Optional.empty())
 
-        assertFailsWith(NotFoundException::class) {
+        assertThrows(NotFoundException::class.java) {
             newsService.delete("", 1)
         }
         verify(newsCrudRepository, times(0)).delete(any(Article::class.java))
@@ -285,7 +281,7 @@ internal class NewsServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 2, 4)).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.delete("", 1)
         }
         verify(newsCrudRepository, times(0)).delete(any(Article::class.java))
@@ -295,7 +291,7 @@ internal class NewsServiceImplTest {
     fun deleteFailDueToWrongToken() {
         `when`(userService.validate("")).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             newsService.delete("", 1)
         }
         verify(newsCrudRepository, times(0)).delete(any(Article::class.java))

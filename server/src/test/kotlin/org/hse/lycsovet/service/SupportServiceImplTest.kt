@@ -1,15 +1,11 @@
 package org.hse.lycsovet.service
 
 import org.hse.lycsovet.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.mockito.ArgumentCaptor
-
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 internal class SupportServiceImplTest {
 
@@ -19,30 +15,16 @@ internal class SupportServiceImplTest {
 
     @Test
     fun createSuccess() {
-        val role = Role(
-            1,
-            "Test",
-            1
-        )
-        val user = User(
-            1,
-            "",
-            role,
-            10,
-            Stream.UNKNOWN,
-            ""
-        )
-
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 1, 3)).thenReturn(true)
-        `when`(userService.getUser("")).thenReturn(user)
+        `when`(userService.getUser("")).thenReturn(createUser())
 
         assertDoesNotThrow {
             supportService.create("", TicketDTO("Test"))
         }
 
         val ticketCaptor = ArgumentCaptor.forClass(Ticket::class.java)
-        verify(ticketCrudRepository).save(ticketCaptor.capture())
+        verify(ticketCrudRepository, times(1)).save(ticketCaptor.capture())
         val capturedTickets = ticketCaptor.allValues
         val ticket = capturedTickets[0]
         assertEquals(true, ticket.opened)
@@ -54,7 +36,7 @@ internal class SupportServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 1, 3)).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             supportService.create("", TicketDTO(""))
         }
     }
@@ -63,7 +45,7 @@ internal class SupportServiceImplTest {
     fun createFailDueToWrongToken() {
         `when`(userService.validate("")).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             supportService.create("", TicketDTO(""))
         }
     }
@@ -71,26 +53,7 @@ internal class SupportServiceImplTest {
     @Test
     fun closeSuccess() {
         val message = "Test"
-        val role = Role(
-            1,
-            "Test",
-            1
-        )
-        val user = User(
-            1,
-            "",
-            role,
-            10,
-            Stream.UNKNOWN,
-            ""
-        )
-        val ticket = Ticket(
-            1,
-            user,
-            "",
-            "",
-            true
-        )
+        val ticket = createTicket()
 
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 4, 4)).thenReturn(true)
@@ -109,7 +72,7 @@ internal class SupportServiceImplTest {
         `when`(userService.checkRoleLevel("", 4, 4)).thenReturn(true)
         `when`(ticketCrudRepository.findById(1)).thenReturn(Optional.empty())
 
-        assertFailsWith(NotFoundException::class) {
+        assertThrows(NotFoundException::class.java) {
             supportService.close("", 1, "Test")
         }
     }
@@ -119,7 +82,7 @@ internal class SupportServiceImplTest {
         `when`(userService.validate("")).thenReturn(true)
         `when`(userService.checkRoleLevel("", 4, 4)).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             supportService.close("", 1, "Test")
         }
     }
@@ -128,8 +91,31 @@ internal class SupportServiceImplTest {
     fun closeFailDueToWrongToken() {
         `when`(userService.validate("")).thenReturn(false)
 
-        assertFailsWith(ForbiddenException::class) {
+        assertThrows(ForbiddenException::class.java) {
             supportService.close("", 1, "Test")
         }
     }
+
+    private fun createUser(
+        id: Long? = 1,
+        login: String = "",
+        role: Role = createRole(),
+        grade: Int = 10,
+        stream: Stream = Stream.UNKNOWN,
+        name: String = ""
+    ) = User(id, login, role, grade, stream, name)
+
+    private fun createRole(
+        id: Long? = 1,
+        name: String = "",
+        level: Int = 1
+    ) = Role(id, name, level)
+
+    private fun createTicket(
+        id: Long? = 1,
+        user: User = createUser(),
+        text: String = "",
+        response: String = "",
+        opened: Boolean = true
+    ) = Ticket(id, user, text, response, opened)
 }
