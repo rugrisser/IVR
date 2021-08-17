@@ -15,9 +15,9 @@ internal class SupportServiceImplTest {
 
     @Test
     fun createSuccess() {
-        `when`(userService.validate("")).thenReturn(true)
-        `when`(userService.checkRoleLevel("", 1, 3)).thenReturn(true)
-        `when`(userService.getUser("")).thenReturn(createUser())
+        `when`(userService.validate(anyString())).thenReturn(true)
+        `when`(userService.checkRoleLevel(anyString(), eq(1), eq(3))).thenReturn(true)
+        `when`(userService.getUser(anyString())).thenReturn(createUser())
 
         assertDoesNotThrow {
             supportService.create("", TicketDTO("Test"))
@@ -33,8 +33,8 @@ internal class SupportServiceImplTest {
 
     @Test
     fun createFailDueToLackOfAccess() {
-        `when`(userService.validate("")).thenReturn(true)
-        `when`(userService.checkRoleLevel("", 1, 3)).thenReturn(false)
+        `when`(userService.validate(anyString())).thenReturn(true)
+        `when`(userService.checkRoleLevel(anyString(), eq(1), eq(3))).thenReturn(false)
 
         assertThrows(ForbiddenException::class.java) {
             supportService.create("", TicketDTO(""))
@@ -43,7 +43,7 @@ internal class SupportServiceImplTest {
 
     @Test
     fun createFailDueToWrongToken() {
-        `when`(userService.validate("")).thenReturn(false)
+        `when`(userService.validate(anyString())).thenReturn(false)
 
         assertThrows(ForbiddenException::class.java) {
             supportService.create("", TicketDTO(""))
@@ -55,9 +55,9 @@ internal class SupportServiceImplTest {
         val message = "Test"
         val ticket = createTicket()
 
-        `when`(userService.validate("")).thenReturn(true)
-        `when`(userService.checkRoleLevel("", 4, 4)).thenReturn(true)
-        `when`(ticketCrudRepository.findById(1)).thenReturn(Optional.of(ticket))
+        `when`(userService.validate(anyString())).thenReturn(true)
+        `when`(userService.checkRoleLevel(anyString(), eq(4), eq(4))).thenReturn(true)
+        `when`(ticketCrudRepository.findById(anyLong())).thenReturn(Optional.of(ticket))
 
         assertDoesNotThrow {
             supportService.close("", 1, message)
@@ -68,9 +68,9 @@ internal class SupportServiceImplTest {
 
     @Test
     fun closeFailDueToMissedTicket() {
-        `when`(userService.validate("")).thenReturn(true)
-        `when`(userService.checkRoleLevel("", 4, 4)).thenReturn(true)
-        `when`(ticketCrudRepository.findById(1)).thenReturn(Optional.empty())
+        `when`(userService.validate(anyString())).thenReturn(true)
+        `when`(userService.checkRoleLevel(anyString(), eq(4), eq(4))).thenReturn(true)
+        `when`(ticketCrudRepository.findById(anyLong())).thenReturn(Optional.empty())
 
         assertThrows(NotFoundException::class.java) {
             supportService.close("", 1, "Test")
@@ -79,8 +79,8 @@ internal class SupportServiceImplTest {
 
     @Test
     fun closeFailDueToLackOfAccess() {
-        `when`(userService.validate("")).thenReturn(true)
-        `when`(userService.checkRoleLevel("", 4, 4)).thenReturn(false)
+        `when`(userService.validate(anyString())).thenReturn(true)
+        `when`(userService.checkRoleLevel(anyString(), eq(4), eq(4))).thenReturn(false)
 
         assertThrows(ForbiddenException::class.java) {
             supportService.close("", 1, "Test")
@@ -89,7 +89,7 @@ internal class SupportServiceImplTest {
 
     @Test
     fun closeFailDueToWrongToken() {
-        `when`(userService.validate("")).thenReturn(false)
+        `when`(userService.validate(anyString())).thenReturn(false)
 
         assertThrows(ForbiddenException::class.java) {
             supportService.close("", 1, "Test")
