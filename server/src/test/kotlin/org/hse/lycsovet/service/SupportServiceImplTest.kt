@@ -96,21 +96,6 @@ internal class SupportServiceImplTest {
         }
     }
 
-    private fun createUser(
-        id: Long? = 1,
-        login: String = "",
-        role: Role = createRole(),
-        grade: Int = 10,
-        stream: Stream = Stream.UNKNOWN,
-        name: String = ""
-    ) = User(id, login, role, grade, stream, name)
-
-    private fun createRole(
-        id: Long? = 1,
-        name: String = "",
-        level: Int = 1
-    ) = Role(id, name, level)
-
     private fun createTicket(
         id: Long? = 1,
         user: User = createUser(),
